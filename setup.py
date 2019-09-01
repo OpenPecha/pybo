@@ -18,7 +18,7 @@ def read(fname):
 
 setuptools.setup(
     name="pybo",
-    version="0.6.8",  # also edit version in pybo/__init__.py
+    version="0.6.10",  # also edit version in pybo/__init__.py
     author="Esukhia development team",
     author_email="esukhiadev@gmail.com",
     description="Python utils for processing Tibetan",
@@ -48,7 +48,7 @@ setuptools.setup(
     },
     python_requires=">=3.6",
     tests_require=["pytest"],
-    install_requires=["pyyaml", "click", "botok"],
+    install_requires=["pyyaml", "click", "botok", "pyewts"],
     entry_points={
         "console_scripts": ["pybo=pybo.cli:cli"]  # command=package.module:function
     },

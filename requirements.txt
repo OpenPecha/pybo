@@ -1,3 +1,4 @@
 click
 PyYAML
 botok
+pyewts
