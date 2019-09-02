@@ -42,10 +42,7 @@ setuptools.setup(
         "License :: OSI Approved :: Apache Software License",
         "Natural Language :: Tibetan",
     ],
-    package_data={
-        "pybo": [
-        ]
-    },
+    package_data={"pybo": []},
     python_requires=">=3.6",
     tests_require=["pytest"],
     install_requires=["pyyaml", "click", "botok", "pyewts"],

@@ -1,11 +1,7 @@
 import click
 from pathlib import Path
 
-from botok import (
-    Text,
-    VERSION,
-    rdr_2_replace_matcher,
-)
+from botok import Text, VERSION, rdr_2_replace_matcher
 from pybo import get_regex_pairs, batch_apply_regex
 
 
@@ -13,6 +9,7 @@ from pybo import get_regex_pairs, batch_apply_regex
 @click.version_option(VERSION)
 def cli():
     pass
+
 
 # Tokenize file
 @cli.command()
@@ -23,12 +20,14 @@ def tok_file(**kwargs):
     t.tokenize_words_raw_lines
     click.echo("done")
 
+
 # Tokenize string
 @cli.command()
 @click.argument("string")
 def tok_string(**kwargs):
     t = Text(kwargs["string"])
     click.echo(t.tokenize_words_raw_lines)
+
 
 # rdr_2_replace_matcher
 @cli.command()
@@ -40,12 +39,13 @@ def rdr2repl(**kwargs):
     processed = rdr_2_replace_matcher(dump)
     outfile.write_text(processed, encoding="utf-8-sig")
 
+
 # FNR - Find and Replace with a list of regexes
 @cli.command()
-@click.argument('in-dir', type=click.Path(exists=True))
-@click.argument('regex-file', type=click.Path(exists=True))
-@click.option('-o', '--out-dir', type=click.Path())
-@click.option('-t', '--tag')
+@click.argument("in-dir", type=click.Path(exists=True))
+@click.argument("regex-file", type=click.Path(exists=True))
+@click.option("-o", "--out-dir", type=click.Path())
+@click.option("-t", "--tag")
 def fnr(**kwargs):
     # get the args
     indir = Path(kwargs["in_dir"])

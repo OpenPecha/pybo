@@ -4,8 +4,8 @@ from pybo import pyewts
 
 converter = pyewts.pyewts()
 
-uni = 'བཀྲ་ཤིས་བདེ་ལེགས།། །།'
-wylie = 'bkra shis bde legs//_//'
+uni = "བཀྲ་ཤིས་བདེ་ལེགས།། །།"
+wylie = "bkra shis bde legs//_//"
 
 new_uni = converter.toUnicode(wylie)
 new_wylie = converter.toWylie(uni)
