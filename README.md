@@ -14,7 +14,7 @@ pybo tokenizes Tibetan text into words.
 #### Getting started
 Requires to have Python3 installed.
 
-    pip3 install pybo
+    pip3 install --user pybo
 
 #### Tokenizing a string
 
