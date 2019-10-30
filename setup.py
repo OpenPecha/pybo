@@ -18,7 +18,7 @@ def read(fname):
 
 setuptools.setup(
     name="pybo",
-    version="0.6.10",  # also edit version in pybo/__init__.py
+    version="0.6.11",  # also edit version in pybo/__init__.py
     author="Esukhia development team",
     author_email="esukhiadev@gmail.com",
     description="Python utils for processing Tibetan",
@@ -42,7 +42,7 @@ setuptools.setup(
         "License :: OSI Approved :: Apache Software License",
         "Natural Language :: Tibetan",
     ],
-    package_data={"pybo": []},
+    package_data={"pybo": ["third_party/*"]},
     python_requires=">=3.6",
     tests_require=["pytest"],
     install_requires=["pyyaml", "click", "botok", "pyewts"],

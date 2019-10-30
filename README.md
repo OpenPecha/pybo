@@ -46,9 +46,15 @@ drupchen@drupchen:~$ head text_pybo.txt
 བཀྲ་ ཤི་ ས་ བདེ་ལེགས་ ཕུན་སུམ་ ཚོགས །_། རྟག་ ཏུ་ བདེ་བ་ ཐོབ་པ ར་ ཤོག །_།
 ```
 
+### Sorting Tibetan words
+```bash
+drupchen@drupchen:~$ pybo kakha to-sort.txt
+```
+The expected input is one word or entry per line in a .txt file. The file will be overwritten.
+
 ## Acknowledgements
 
-**pybo** is an open source library for Tibetan NLP.
+- **pybo** is an open source library for Tibetan NLP.
 
 We are always open to cooperation in introducing new features, tool integrations and testing solutions.
 
@@ -57,6 +63,8 @@ Many thanks to the companies and organizations who have supported pybo's develop
 * [Khyentse Foundation](https://khyentsefoundation.org) for contributing USD22,000 to kickstart the project 
 * The [Barom/Esukhia canon project](http://www.barom.org) for sponsoring training data curation
 * [BDRC](https://tbrc.org) for contributing 2 staff for 6 months for data curation
+
+- `third_party/rules.txt` is taken from [tibetan-collation](https://github.com/eroux/tibetan-collation/blob/master/implementations/Unicode/rules.txt).
 
 ## Maintainance
 

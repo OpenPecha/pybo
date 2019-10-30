@@ -1,12 +1,12 @@
 import click
 from pathlib import Path
 
-from botok import Text, VERSION, rdr_2_replace_matcher
-from pybo import get_regex_pairs, batch_apply_regex
+from botok import Text, __version__, rdr_2_replace_matcher
+from pybo import get_regex_pairs, batch_apply_regex, bo_sorted
 
 
 @click.group()
-@click.version_option(VERSION)
+@click.version_option(__version__)
 def cli():
     pass
 
@@ -38,6 +38,16 @@ def rdr2repl(**kwargs):
     dump = infile.read_text(encoding="utf-8-sig")
     processed = rdr_2_replace_matcher(dump)
     outfile.write_text(processed, encoding="utf-8-sig")
+
+
+# sort in the Tibetan order
+@cli.command()
+@click.argument("infile", type=click.Path(exists=True))
+def kakha(**kwargs):
+    infile = Path(kwargs["infile"])
+    words = infile.read_text(encoding="utf-8-sig").split()
+    words = bo_sorted(words)
+    infile.write_text("\n".join(words), encoding="utf-8-sig")
 
 
 # FNR - Find and Replace with a list of regexes
