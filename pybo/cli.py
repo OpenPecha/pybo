@@ -100,7 +100,6 @@ def tok(**kwargs):
         return wt.tokenize(in_str)
 
     for f in input_dir.glob("*.txt"):
-        print("HERE", f)
         text = Text(f, output_dir / f.name)
         text.custom_pipeline("basic_cleanup", tok, "words_raw_text", "plaintext")
 
