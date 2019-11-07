@@ -1,4 +1,4 @@
 click
 PyYAML
-botok
+botok >= 0.6.16
 pyewts
