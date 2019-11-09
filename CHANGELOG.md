@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.6.12](https://github.com/Esukhia/pybo/releases/tag/v0.6.12) - 20191109
+### Added
+ * added rdr_2_replace_matcher in utils
+
 ## [0.6.11](https://github.com/Esukhia/pybo/releases/tag/v0.6.11) - 20191030
 ### Added
  * added bo_sort() and the corresponding kakha CLI option

@@ -5,4 +5,4 @@ from .utils.bo_sorted import bo_sorted
 from botok import *
 import pyewts
 
-VERSION = "0.6.11"
+__version__ = "0.6.12"

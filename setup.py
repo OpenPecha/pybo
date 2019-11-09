@@ -6,8 +6,17 @@ from __future__ import print_function
 from pathlib import Path
 import setuptools
 from pkg_resources import parse_version
+import re
 
 assert parse_version(setuptools.__version__) >= parse_version("38.6.0")
+
+
+def get_version(prop, project):
+    project = Path(__file__).parent / project / "__init__.py"
+    result = re.search(
+        r'{}\s*=\s*[\'"]([^\'"]*)[\'"]'.format(prop), project.read_text()
+    )
+    return result.group(1)
 
 
 def read(fname):
@@ -18,7 +27,7 @@ def read(fname):
 
 setuptools.setup(
     name="pybo",
-    version="0.6.11",  # also edit version in pybo/__init__.py
+    version=get_version("__version__", "pybo"),  # edit version in pybo/__init__.py
     author="Esukhia development team",
     author_email="esukhiadev@gmail.com",
     description="Python utils for processing Tibetan",
