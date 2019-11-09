@@ -29,20 +29,24 @@ Loading Trie... (2s.)
 ```
 
 #### Tokenizing a file
-Writes a file of the same name suffixed with `_pybo`
 
-```bash
-The file that will be tokenized:
-drupchen@drupchen:~$ head text.txt
+The command to tokenize a file is:
+```
+pybo tok <path-to-file>
+```
+
+For example to tokenize the file `text.txt` with the following content:
+```
 བཀྲ་ཤི་ས་བདེ་ལེགས་ཕུན་སུམ་ཚོགས། །རྟག་ཏུ་བདེ་བ་ཐོབ་པར་ཤོག། །
+```
 
-drupchen@drupchen:~$ pybo tok-file text.txt
-parsing text.txt...
-Loading Trie... (2s.)
-done
+I use the command:
+```
+drupchen@drupchen:~$ pybo tok-file ~\Documents\text.txt
+```
 
-The output file:
-drupchen@drupchen:~$ head text_pybo.txt
+...which create `text_pybo.txt` containing:
+```
 བཀྲ་ ཤི་ ས་ བདེ་ལེགས་ ཕུན་སུམ་ ཚོགས །_། རྟག་ ཏུ་ བདེ་བ་ ཐོབ་པ ར་ ཤོག །_།
 ```
 
