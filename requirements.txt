@@ -2,4 +2,3 @@ click
 PyYAML
 botok >= 0.6.16
 pyewts
-pyicu
