@@ -5,6 +5,8 @@ import click
 from botok import Text, __version__, WordTokenizer, expose_data
 from pybo import get_regex_pairs, batch_apply_regex, bo_sorted
 
+from .utils.rdr_2_replace_matcher import rdr_2_replace_matcher
+
 
 def prepare_folder(main=None, custom=None, overwrite=False):
     profile = "GMD"
@@ -112,15 +114,15 @@ def tok_string(**kwargs):
     click.echo(t.tokenize_words_raw_lines)
 
 
-# # rdr_2_replace_matcher
-# @cli.command()
-# @click.argument("infile", type=click.Path(exists=True))
-# def rdr2repl(**kwargs):
-#     infile = Path(kwargs["infile"])
-#     outfile = infile.parent / (infile.stem + ".yaml")
-#     dump = infile.read_text(encoding="utf-8-sig")
-#     processed = rdr_2_replace_matcher(dump)
-#     outfile.write_text(processed, encoding="utf-8-sig")
+# rdr_2_replace_matcher
+@cli.command()
+@click.argument("infile", type=click.Path(exists=True))
+def rdr2repl(**kwargs):
+    infile = Path(kwargs["infile"])
+    outfile = infile.parent / (infile.stem + ".yaml")
+    dump = infile.read_text(encoding="utf-8-sig")
+    processed = rdr_2_replace_matcher(dump)
+    outfile.write_text(processed, encoding="utf-8-sig")
 
 
 # sort in the Tibetan order
