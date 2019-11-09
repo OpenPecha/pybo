@@ -52,6 +52,19 @@ drupchen@drupchen:~$ pybo kakha to-sort.txt
 ```
 The expected input is one word or entry per line in a .txt file. The file will be overwritten.
 
+### FNR - Find and Replace with a list of regexes
+
+```
+pybo fnr <in-dir> <regex-file> -o <out-dir> -t <tag>
+```
+`-o` and `-t` are optional
+
+Text files should be UTF-8 plain text files. The regexes should be in the following format:
+
+```
+<find-pattern><tab>-<tab><replace-pattern>
+```
+
 ## Acknowledgements
 
 - **pybo** is an open source library for Tibetan NLP.
