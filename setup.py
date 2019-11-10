@@ -53,8 +53,12 @@ setuptools.setup(
     ],
     package_data={"pybo": ["third_party/*"]},
     python_requires=">=3.6",
+    dependency_links=[
+        "https://download.lfd.uci.edu/pythonlibs/g5apjq5m/PyICU-2.3.1-cp37-cp37m-win_amd64.whl", 
+        "https://download.lfd.uci.edu/pythonlibs/g5apjq5m/PyICU-2.3.1-cp36-cp36m-win_amd64.whl",
+        ],
+    install_requires=["pyyaml", "pyicu", "click", "botok", "pyewts"],
     tests_require=["pytest"],
-    install_requires=["pyyaml", "click", "botok", "pyewts"],
     entry_points={
         "console_scripts": ["pybo=pybo.cli:cli"]  # command=package.module:function
     },
