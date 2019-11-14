@@ -4,6 +4,7 @@ from shutil import rmtree
 import click
 from botok import Text, __version__, WordTokenizer, expose_data
 from pybo import get_regex_pairs, batch_apply_regex, bo_sorted
+from pybo import pybo_prep, pybo_mod, pybo_form
 
 from .utils.rdr_2_replace_matcher import rdr_2_replace_matcher
 
@@ -86,7 +87,7 @@ def tok(**kwargs):
         click.echo("main/custom profiles: " + str(p2))
     else:
         main, custom = prepare_folder(overwrite=overwrite)
-        click.echo("main/custom profiles: " + str(p2))
+        click.echo("using default profile")
 
     wt = WordTokenizer(
         tok_profile=main,
@@ -98,12 +99,12 @@ def tok(**kwargs):
         conf_path=main.parent,
     )
 
-    def tok(in_str):
+    def pybo_tok(in_str):
         return wt.tokenize(in_str)
 
     for f in input_dir.glob("*.txt"):
         text = Text(f, output_dir / f.name)
-        text.custom_pipeline("basic_cleanup", tok, "words_raw_text", "plaintext")
+        text.custom_pipeline(pybo_prep, pybo_tok, pybo_mod, pybo_form)
 
 
 # Tokenize string

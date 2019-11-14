@@ -1,6 +1,11 @@
 from pathlib import Path
 
-from pybo import pyewts
+from pybo import pyewts, Text
+
+string = """ཤོག
+བཀྲ་ཤིས་"""
+t = Text(string)
+print(t.tokenize_words_raw_lines)
 
 converter = pyewts.pyewts()
 

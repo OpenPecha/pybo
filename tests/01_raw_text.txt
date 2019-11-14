@@ -1,0 +1,64 @@
+STEP 1: standard botok + custom words and rules
+    - 1 raw text
+    - 2 segmented text
+
+STEP 2:
+    - 1 manually corrected segmentation and POS + extra information
+
+    - 2 extract info from manually corrected
+        - entry data: (script to create)
+            - word lists + entry data
+            - rules
+        - rules: (RDR)
+            - extract rules using RDR
+            - filter them manually
+            - convert them to botok matcher replacements
+
+            https://github.com/buda-base/bonlp-datasets/blob/master/human2rdr.txt
+
+STEP 3:
+    - resegment using only clean entry data
+    - adjust wordlists and rules until it is as close to the manually corrected as possible
+    - provide new entry data and
+
+
+
+
+
+
+
+STEP1 + STEP 3
+pybo tok <input_dir> <output_dir> -p <main_dir>
+pybo tok <input_dir> <output_dir> -p2 <main_dir> <custom_dir>
+
+STEP2
+pybo extract profile <input_dir>
+output will be :
+    - for entry data: words_bo + entry_data
+    - for RDR: human readable rules to be proofed
+
+pybo convert <input_dir>
+will convert human readable selected rules to matcher replacement rules.
+
+
+
+
+
+
+
+Documents/
+    pybo/
+        main_profile/
+            adjustment/
+            entry_data/
+            frequency/
+            words_bo/
+            words_non_inflected/
+            words_skrt/
+        custom_profile/
+            adjustment/
+            entry_data/
+            frequency/
+            words_bo/
+            words_non_inflected/
+            words_skrt/
