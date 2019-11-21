@@ -1,0 +1,7 @@
+བཀྲ་ཤིས་བདེ་ལེགས་/OOV ཕུན་སུམ་ཚོགས/ADJ །_/PUNCT རྟག་ཏུ་/OOV བདེ་བ་/VERB ཐོབ་པ/VERB ར་/PART ཤོག/AUX བཀྲ་/OTHER ཤིས་/NOUN བདེ་ལེགས་/NOUN ཕུན་སུམ་ཚོགས/ADJ །_/PUNCT རྟག་ཏུ་/OOV བདེ་བ་/VERB ཐོབ་པ/VERB ར་/PART ཤོག/VERB
+བཀྲ་ཤིས་བདེ་ལེགས་/OOV ཕུན་སུམ་ཚོགས/ADJ །_/PUNCT རྟག་ཏུ་/OOV བདེ་བ་/VERB ཐོབ་པ/VERB ར་/PART ཤོག/AUX བཀྲ་/OTHER ཤིས་/NOUN བདེ་ལེགས་/NOUN ཕུན་སུམ་ཚོགས/ADJ །_/PUNCT རྟག་ཏུ་/OOV བདེ་བ་/VERB ཐོབ་པ/VERB ར་/PART ཤོག/VERB
+བཀྲ་ཤིས་བདེ་ལེགས་/OOV ཕུན་སུམ་ཚོགས/ADJ །_/PUNCT རྟག་ཏུ་/OOV བདེ་བ་/VERB ཐོབ་པ/VERB ར་/PART ཤོག/AUX བཀྲ་/OTHER ཤིས་/NOUN བདེ་ལེགས་/NOUN ཕུན་སུམ་ཚོགས/ADJ །_/PUNCT རྟག་ཏུ་/OOV བདེ་བ་/VERB ཐོབ་པ/VERB ར་/PART ཤོག/VERB
+བཀྲ་ཤིས་བདེ་ལེགས་/OOV ཕུན་སུམ་ཚོགས/ADJ །_/PUNCT རྟག་ཏུ་/OOV བདེ་བ་/VERB ཐོབ་པ/VERB ར་/PART ཤོག/AUX བཀྲ་/OTHER ཤིས་/NOUN བདེ་ལེགས་/NOUN ཕུན་སུམ་ཚོགས/ADJ །_/PUNCT རྟག་ཏུ་/OOV བདེ་བ་/VERB ཐོབ་པ/VERB ར་/PART ཤོག/VERB
+བཀྲ་ཤིས་བདེ་ལེགས་/OOV ཕུན་སུམ་ཚོགས/ADJ །_/PUNCT རྟག་ཏུ་/OOV བདེ་བ་/VERB ཐོབ་པ/VERB ར་/PART ཤོག/AUX བཀྲ་/OTHER ཤིས་/NOUN བདེ་ལེགས་/NOUN ཕུན་སུམ་ཚོགས/ADJ །_/PUNCT རྟག་ཏུ་/OOV བདེ་བ་/VERB ཐོབ་པ/VERB ར་/PART ཤོག/VERB
+བཀྲ་ཤིས་བདེ་ལེགས་/OOV ཕུན་སུམ་ཚོགས/ADJ །_/PUNCT རྟག་ཏུ་/OOV བདེ་བ་/VERB ཐོབ་པ/VERB ར་/PART ཤོག/AUX བཀྲ་/OTHER ཤིས་/NOUN བདེ་ལེགས་/NOUN ཕུན་སུམ་ཚོགས/ADJ །_/PUNCT རྟག་ཏུ་/OOV བདེ་བ་/VERB ཐོབ་པ/VERB ར་/PART ཤོག/VERB
+བཀྲ་ཤིས་བདེ་ལེགས་/OOV ཕུན་སུམ་ཚོགས/ADJ །_/PUNCT རྟག་ཏུ་/OOV བདེ་བ་/VERB ཐོབ་པ/VERB ར་/PART ཤོག/AUX བཀྲ་/OTHER ཤིས་/NOUN བདེ་ལེགས་/NOUN ཕུན་སུམ་ཚོགས/ADJ །_/PUNCT རྟག་ཏུ་/OOV བདེ་བ་/VERB ཐོབ་པ/VERB ར་/PART ཤོག/VERB
