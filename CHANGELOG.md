@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.6.14](https://github.com/Esukhia/pybo/releases/tag/v0.6.14) - 20191114
+### Fixed
+ * piycu for Windows from third-party website
+ * temporarily remove bo_sorted() + CLI command
+ * fixed rdr_2_replace_matcher bug on first line of rules
+### Added
+ * cwd CLI command
+
 ## [0.6.13](https://github.com/Esukhia/pybo/releases/tag/v0.6.13) - 20191109
 ### Fixed
  * removed pyicu dependency

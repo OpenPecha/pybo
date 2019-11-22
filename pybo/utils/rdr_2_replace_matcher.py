@@ -30,9 +30,9 @@ eq_table = {
 
 def rdr_2_replace_matcher(string):
     cql = format_rules(find_rules(find_levels(string)))
-    repl = " - repla: ['{match_cql}', {replace_index}, '{replace_cql}']"
+    repl = "{match_cql}\t{replace_index}\t=\t{replace_cql}"
     repls = [
-        repl.format(match_cql=a, replace_index=b, replace_cql=c) for a, b, c in cql
+        repl.format(match_cql=a, replace_index=b, replace_cql=c, ) for a, b, c in cql
     ]
     return "\n".join(repls)
 
@@ -71,6 +71,8 @@ def format_rules(rules):
 def find_levels(string):
     out = []
     for line in string.split("\n"):
+        if not line:
+            continue
         count = 0
         while line[0] == level_sep:
             count += 1
@@ -86,6 +88,10 @@ def find_rules(lines):
     # test == {<position/int>: (<tag>, <POS>), ...}
     state = {}
     for level, line in lines:
+        # if level 0, pass. there is no rule to implement
+        if level == 0:
+            continue
+
         tests, ccl = parse_line(line)
         ordered_tests = defaultdict(list)
         for t in tests:
@@ -95,12 +101,8 @@ def find_rules(lines):
         # save current rule in state to use in indented rules
         state[level] = ordered_tests
 
-        # if level 0, pass. there is no rule to implement
-        if level == 0:
-            continue
-
         test = defaultdict(list)
-        for l in range(level + 1):
+        for l in range(1, level + 1):
             for pos, t in state[l].items():
                 for u in t:
                     if u not in test[pos]:  # avoid duplicates

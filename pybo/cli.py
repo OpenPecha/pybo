@@ -3,10 +3,10 @@ from shutil import rmtree
 
 import click
 from botok import Text, __version__, WordTokenizer, expose_data
-from pybo import get_regex_pairs, batch_apply_regex, bo_sorted
+from pybo import get_regex_pairs, batch_apply_regex  # , bo_sorted
 from pybo import pybo_prep, pybo_mod, pybo_form
 
-from .utils.rdr_2_replace_matcher import rdr_2_replace_matcher
+from utils.rdr_2_replace_matcher import rdr_2_replace_matcher
 
 
 def prepare_folder(main=None, custom=None, overwrite=False):
@@ -126,14 +126,21 @@ def rdr2repl(**kwargs):
     outfile.write_text(processed, encoding="utf-8-sig")
 
 
-# sort in the Tibetan order
+# # sort in the Tibetan order
+# @cli.command()
+# @click.argument("infile", type=click.Path(exists=True))
+# def kakha(**kwargs):
+#     infile = Path(kwargs["infile"])
+#     words = infile.read_text(encoding="utf-8-sig").split()
+#     words = bo_sorted(words)
+#     infile.write_text("\n".join(words), encoding="utf-8-sig")
+
+
+# generate rdr rules
 @cli.command()
 @click.argument("infile", type=click.Path(exists=True))
-def kakha(**kwargs):
+def rdr(**kwargs):
     infile = Path(kwargs["infile"])
-    words = infile.read_text(encoding="utf-8-sig").split()
-    words = bo_sorted(words)
-    infile.write_text("\n".join(words), encoding="utf-8-sig")
 
 
 # FNR - Find and Replace with a list of regexes
@@ -170,6 +177,11 @@ def fnr(**kwargs):
             else:
                 outfile = f.parent / name
             outfile.write_text(out, encoding="utf-8-sig")
+
+
+@cli.command()
+def cwd():
+    click.echo(Path(__file__).cwd())
 
 
 if __name__ == "__main__":
