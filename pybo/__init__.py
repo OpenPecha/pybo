@@ -7,4 +7,4 @@ from .corpus.parse_corrected import parse_corrected, generate_data
 from botok import *
 import pyewts
 
-__version__ = "0.6.14"
+__version__ = "0.6.15"

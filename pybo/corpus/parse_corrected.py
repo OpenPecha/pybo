@@ -1,7 +1,7 @@
 # coding: utf-8
 import re
 from .word_cleanup import word_cleanup
-from ..utils.bo_sorted import bo_sorted
+# from ..utils.bo_sorted import bo_sorted
 
 
 def parse_corrected(in_str):
@@ -40,8 +40,8 @@ def generate_data(in_str):
             entry_data.append(e_d)
 
     # sort both lists
-    words = bo_sorted(words)
-    entry_data = bo_sorted(entry_data)
+    # words = bo_sorted(words)
+    # entry_data = bo_sorted(entry_data)
     entry_data = ["# form	pos	lemma	sense	freq"] + entry_data
 
     return "\n".join(words), "\n".join(entry_data)
