@@ -49,10 +49,11 @@ def serializeHfr(tokens):
 
 def cql2hfr(cqlr):
     parsedCqlr = parseCql(cqlr)
+    print(f'parsedCqlr: {parsedCqlr}')
     parsedHfr = translate2Hfr(parsedCqlr)
+    print(f'parsedHfr: {parsedHfr}')
     hfr = serializeHfr(parsedHfr)
-    print(f'cqlr: {hfr}')
-
+    print(f'hfr: {hfr}')
 
 
 cql2hfr(cqlr)
