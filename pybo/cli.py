@@ -3,10 +3,10 @@ from shutil import rmtree
 
 import click
 from botok import Text, __version__, WordTokenizer, expose_data
-from pybo import get_regex_pairs, batch_apply_regex  # , bo_sorted
-from pybo import pybo_prep, pybo_mod, pybo_form
+from .utils.regex_batch_apply import get_regex_pairs, batch_apply_regex
+from .pipeline.pipes import pybo_prep, pybo_mod, pybo_form
 
-from utils.rdr_2_replace_matcher import rdr_2_replace_matcher
+from .utils.rdr_2_replace_matcher import rdr_2_replace_matcher
 
 
 def prepare_folder(main=None, custom=None, overwrite=False):
