@@ -9,6 +9,17 @@ from .pipeline.pipes import pybo_prep, pybo_mod, pybo_form
 from .utils.rdr_2_replace_matcher import rdr_2_replace_matcher
 
 
+@click.group()
+@click.version_option(__version__)
+def cli():
+    pass
+
+
+@cli.command()
+def cwd():
+    click.echo("pybo path: " + str(Path(__file__).parent.resolve()))
+
+
 def prepare_folder(main=None, custom=None, overwrite=False):
     profile = "GMD"
     # 1. MAIN PROFILE
@@ -45,12 +56,6 @@ def prepare_folder(main=None, custom=None, overwrite=False):
         Path(custom / dir).mkdir(exist_ok=True)
 
     return main, custom
-
-
-@click.group()
-@click.version_option(__version__)
-def cli():
-    pass
 
 
 # Tokenize file
@@ -177,11 +182,6 @@ def fnr(**kwargs):
             else:
                 outfile = f.parent / name
             outfile.write_text(out, encoding="utf-8-sig")
-
-
-@cli.command()
-def cwd():
-    click.echo(Path(__file__).cwd())
 
 
 if __name__ == "__main__":
