@@ -1,0 +1,21 @@
+"ADJ"	-	རཚ
+"ADP"	-	ཡཚ
+"ADV"	-	ནཚ
+"AUX"	-	བག
+"CCONJ"	-	ཏམ
+"DET"	-	ངཟ
+"INTJ"	-	འཚ
+"NOUN"	-	མཚ
+"NUM"	-	ངཚ
+"PRON"	-	ཚབ
+"PROPN"	-	ཁམ
+"PUNCT"	-	ཚཤ
+"SCONJ"	-	ཏཅ
+"VERB"	-	བཚ
+"PART"	-	གཚ
+pos=	-	གཤིས=
+lemma=	-	མ=
+sense=	-	དོན=
+ & 	-	 ༈ 
+\[	-	༺
+\]	-	༻
