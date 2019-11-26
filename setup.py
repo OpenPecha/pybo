@@ -62,7 +62,7 @@ setuptools.setup(
         "https://download.lfd.uci.edu/pythonlibs/g5apjq5m/PyICU-2.3.1-cp36-cp36m-win_amd64.whl",
         "https://download.lfd.uci.edu/pythonlibs/g5apjq5m/PyICU-2.3.1-cp36-cp36m-win32.whl",
         ],
-    install_requires=["pyyaml", "click", "botok", "pyewts"],
+    install_requires=["pyyaml", "click", "botok", "pyewts", "bordr"],
     tests_require=["pytest"],
     entry_points={
         "console_scripts": ["pybo=pybo.cli:cli"]  # command=package.module:function

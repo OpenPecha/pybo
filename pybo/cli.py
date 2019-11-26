@@ -1,23 +1,35 @@
 from pathlib import Path
 from shutil import rmtree
+import tempfile
 
 import click
-from botok import Text, __version__, WordTokenizer, expose_data
-from .utils.regex_batch_apply import get_regex_pairs, batch_apply_regex
-from .pipeline.pipes import pybo_prep, pybo_mod, pybo_form
+from botok import Text, WordTokenizer, expose_data
+from botok import __version__ as botok__version__
+from pyewts import VERSION as pyewts__version__
+from bordr import __version__ as bordr__version
+from pybo import __version__ as pybo__version__
 
-from .utils.rdr_2_replace_matcher import rdr_2_replace_matcher
+
+from utils.regex_batch_apply import get_regex_pairs, batch_apply_regex
+from pipeline.pipes import pybo_prep, pybo_mod, pybo_form
+from rdr.rdr_2_replace_matcher import rdr_2_replace_matcher
+from rdr.rdr import rdr as r
+
 
 
 @click.group()
-@click.version_option(__version__)
+@click.version_option(pybo__version__)
 def cli():
     pass
 
 
 @cli.command()
-def cwd():
-    click.echo("pybo path: " + str(Path(__file__).parent.resolve()))
+def info():
+    click.echo("pybo install path: " + str(Path(__file__).parent.resolve()))
+    click.echo("pybo: " + pybo__version__)
+    click.echo("botok: " + botok__version__)
+    click.echo("pyewts: " + pyewts__version__)
+    click.echo("bordr: " + bordr__version)
 
 
 def prepare_folder(main=None, custom=None, overwrite=False):
@@ -61,7 +73,7 @@ def prepare_folder(main=None, custom=None, overwrite=False):
 # Tokenize file
 @cli.command()
 @click.argument("input-dir", type=click.Path(exists=True))
-@click.argument("output-dir", type=click.Path(exists=True))
+@click.option("-o", type=click.Path(exists=True))
 @click.option("-p", type=click.Path(exists=True), help="main-profile path")
 @click.option(
     "-p2",
@@ -69,10 +81,13 @@ def prepare_folder(main=None, custom=None, overwrite=False):
     type=(click.Path(exists=True), click.Path(exists=True)),
     help="paths: main-profile, custom-profile",
 )
-@click.option("-o", "--overwrite", is_flag=True)
+@click.option("-w", "--overwrite", is_flag=True)
 def tok(**kwargs):
     input_dir = Path(kwargs["input_dir"])
-    output_dir = Path(kwargs["output_dir"])
+    if kwargs["o"] is not None:
+        output_dir = Path(kwargs["o"])
+    else:
+        output_dir = input_dir
     p = kwargs["p"]
     p2 = kwargs["p2"]
     overwrite = kwargs["overwrite"]
@@ -108,7 +123,10 @@ def tok(**kwargs):
         return wt.tokenize(in_str)
 
     for f in input_dir.glob("*.txt"):
-        text = Text(f, output_dir / f.name)
+        if "_tok.txt" in str(f):  # do not re-tokenize tokenized files
+            continue
+        out_file = output_dir / (f.stem + "_tok.txt")
+        text = Text(f, out_file)
         text.custom_pipeline(pybo_prep, pybo_tok, pybo_mod, pybo_form)
 
 
@@ -143,16 +161,35 @@ def rdr2repl(**kwargs):
 
 # generate rdr rules
 @cli.command()
-@click.argument("infile", type=click.Path(exists=True))
+@click.argument("input", type=click.Path(exists=True))
+@click.option("-o", "--out-dir", type=click.Path(exists=True))
+@click.option("-k", "--keep", type=str)
 def rdr(**kwargs):
-    infile = Path(kwargs["infile"])
+    file_or_dir = Path(kwargs["input"])
+    keep = "none" if kwargs["keep"] is None else kwargs["keep"]
+
+    log = None
+    if file_or_dir.is_dir():
+        file = file_or_dir / file_or_dir.name
+        with open(file, encoding="utf-8-sig", mode="w") as tmp:
+            # concatenate all the content of input
+            for f in file_or_dir.glob("*.txt"):
+                tmp.write(f.read_text(encoding="utf-8-sig") + "\n")  # adding a return to file content
+        log = r(file, kwargs["out_dir"], keep=keep)
+        file.unlink()
+    elif file_or_dir.is_file():
+        log = r(file_or_dir, kwargs["out_dir"], keep=keep)
+    else:
+        click.echo(f'"{file_or_dir}" does not exist.')
+
+    click.echo(log)
 
 
 # FNR - Find and Replace with a list of regexes
 @cli.command()
 @click.argument("in-dir", type=click.Path(exists=True))
 @click.argument("regex-file", type=click.Path(exists=True))
-@click.option("-o", "--out-dir", type=click.Path())
+@click.option("-o", "--out-dir", type=click.Path(exists=True))
 @click.option("-t", "--tag")
 def fnr(**kwargs):
     # get the args

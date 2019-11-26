@@ -27,11 +27,12 @@ eq_table = {
     next_word: "text",
 }
 
+
 def rdr_2_replace_matcher(string):
     cql = format_rules(find_rules(find_levels(string)))
     repl = "{match_cql}\t{replace_index}\t=\t{replace_cql}"
     repls = [
-        repl.format(match_cql=a, replace_index=b, replace_cql=c, ) for a, b, c in cql
+        repl.format(match_cql=a, replace_index=b, replace_cql=c, ) for a, b, c in cql if a != c
     ]
     return "\n".join(repls)
 
