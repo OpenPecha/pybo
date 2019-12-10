@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.6.18](https://github.com/Esukhia/pybo/releases/tag/v0.6.18) - 20191210
+### Added
+ * botok profile report: `pybo profile-report <path>`
+ Finds out all duplicates over all the folders and files.
+
 ## [0.6.17](https://github.com/Esukhia/pybo/releases/tag/v0.6.17) - 20191122
 ### Fixed
  * bad setup
