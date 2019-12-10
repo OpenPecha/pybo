@@ -11,6 +11,7 @@ from pybo import __version__ as pybo__version__
 
 
 from utils.regex_batch_apply import get_regex_pairs, batch_apply_regex
+from utils.profile_report import profile_report
 from pipeline.pipes import pybo_prep, pybo_mod, pybo_form
 from rdr.rdr_2_replace_matcher import rdr_2_replace_matcher
 from rdr.rdr import rdr as r
@@ -136,6 +137,14 @@ def tok(**kwargs):
 def tok_string(**kwargs):
     t = Text(kwargs["string"])
     click.echo(t.tokenize_words_raw_lines)
+
+
+# create report for botok profiles
+@cli.command()
+@click.argument("profile", type=click.Path(exists=True))
+def profile_report(**kwargs):
+    profile_path = Path(kwargs["profile"])
+    profile_report(profile_path)
 
 
 # rdr_2_replace_matcher
