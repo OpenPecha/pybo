@@ -9,4 +9,4 @@ from .utils.profile_report import profile_report
 from .pipeline.pipes import pybo_prep, pybo_mod, pybo_form
 from .corpus.parse_corrected import parse_corrected, generate_data
 
-__version__ = "0.6.18"
+__version__ = "0.6.19"

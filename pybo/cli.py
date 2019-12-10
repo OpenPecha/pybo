@@ -9,11 +9,11 @@ from bordr import __version__ as bordr__version
 from pybo import __version__ as pybo__version__
 
 
-from utils.regex_batch_apply import get_regex_pairs, batch_apply_regex
-from utils.profile_report import profile_report as p_report
-from pipeline.pipes import pybo_prep, pybo_mod, pybo_form
-from rdr.rdr_2_replace_matcher import rdr_2_replace_matcher
-from rdr.rdr import rdr as r
+from .utils.regex_batch_apply import get_regex_pairs, batch_apply_regex
+from .utils.profile_report import profile_report as p_report
+from .pipeline.pipes import pybo_prep, pybo_mod, pybo_form
+from .rdr.rdr_2_replace_matcher import rdr_2_replace_matcher
+from .rdr.rdr import rdr as r
 
 
 
