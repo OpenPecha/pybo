@@ -1,6 +1,5 @@
 from pathlib import Path
 from shutil import rmtree
-import tempfile
 
 import click
 from botok import Text, WordTokenizer, expose_data
@@ -11,7 +10,7 @@ from pybo import __version__ as pybo__version__
 
 
 from utils.regex_batch_apply import get_regex_pairs, batch_apply_regex
-from utils.profile_report import profile_report
+from utils.profile_report import profile_report as p_report
 from pipeline.pipes import pybo_prep, pybo_mod, pybo_form
 from rdr.rdr_2_replace_matcher import rdr_2_replace_matcher
 from rdr.rdr import rdr as r
@@ -34,7 +33,7 @@ def info():
 
 
 def prepare_folder(main=None, custom=None, overwrite=False):
-    profile = "GMD"
+    profile = "POS"
     # 1. MAIN PROFILE
     if not main:
         # for better Windows support:
@@ -143,8 +142,7 @@ def tok_string(**kwargs):
 @cli.command()
 @click.argument("profile", type=click.Path(exists=True))
 def profile_report(**kwargs):
-    profile_path = Path(kwargs["profile"])
-    profile_report(profile_path)
+    p_report(kwargs["profile"])
 
 
 # rdr_2_replace_matcher
