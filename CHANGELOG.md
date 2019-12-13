@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.6.20](https://github.com/Esukhia/pybo/releases/tag/v0.6.20) - 20191213
+### Added
+ * Support for `object.suffixL<X>` in CQL rule creation.
+
 ## [0.6.19](https://github.com/Esukhia/pybo/releases/tag/v0.6.19) - 20191210
 ### Fixed
  * import bug fixed
