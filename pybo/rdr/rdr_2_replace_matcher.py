@@ -8,6 +8,7 @@ next_tag = "object.nextTag"
 prev_word = "object.prevWord"
 next_word = "object.nextWord"
 conclusion = "object.conclusion"
+suffix = "object.suffixL"
 op = " == "
 ccl_op = " = "
 cond_sep = " and "
@@ -15,7 +16,7 @@ rule_sep = " : "
 cql_rule_sep = " & "
 level_sep = "\t"
 
-positive = [tag, word, next_tag, next_word, conclusion]
+positive = [tag, word, next_tag, next_word, conclusion, suffix]
 negative = [prev_tag, prev_word]
 eq_table = {
     tag: "pos",
@@ -25,6 +26,7 @@ eq_table = {
     word: "text",
     prev_word: "text",
     next_word: "text",
+    suffix: "text",
 }
 
 
@@ -132,6 +134,9 @@ def parse_test(test):
             if n in attr and len(attr) > len(n):
                 pos = -int(attr[-1])
                 attr = attr[:-1]
+
+        if attr == suffix:
+            tag = '".*' + tag[1:]
         return attr, pos, tag
 
     if op in test:
