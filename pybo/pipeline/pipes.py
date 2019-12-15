@@ -2,7 +2,8 @@
 
 
 def pybo_prep(in_str):
-    # do nothing
+    # remove all returns from input
+    in_str = in_str.replace("\n", "")
     return in_str
 
 
@@ -13,7 +14,7 @@ def pybo_mod(tokens):
     """extract text/pos tuples from Token objects"""
     txt_pos = []
     for t in tokens:
-        txt = t.text
+        txt = t.text_cleaned if t.text_cleaned else t.text
         pos = t.pos if t.pos else t.chunk_type
         txt_pos.append((txt, pos))
     return txt_pos
