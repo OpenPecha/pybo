@@ -51,9 +51,14 @@ def profile_report(pathname):
             tmp.append(f"{entry}: {num}")
             for line, files in e.items():
                 tmp.append(f'\t"{line}"')
-                tmp.extend([f'\t\t{f}\t{n}' for f, n in files])
+                tmp.extend([f"\t\t{f}\t{n}" for f, n in files])
             report.extend(tmp)
-    report = [f"total distinct entries: {len(data)}"] + [f"entries with {a} entries: {b}" for a, b in count.items()] + [""] + report
+    report = (
+        [f"total distinct entries: {len(data)}"]
+        + [f"entries with {a} entries: {b}" for a, b in count.items()]
+        + [""]
+        + report
+    )
     report = "\n".join(report)
 
     # print to file

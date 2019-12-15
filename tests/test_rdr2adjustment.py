@@ -7,7 +7,8 @@ from pybo.rdr.rdr_2_replace_matcher import rdr_2_replace_matcher
 def test_suffix_bug():
     dump = Path("./resources/rdr_rules.txt").read_text()
     rules = rdr_2_replace_matcher(dump)
-    expected = dedent("""\
+    expected = dedent(
+        """\
             [pos="DET" & text="དག"] [pos="PART"]	1	=	[pos="VERB"]
             [pos="PART" & text="ས"] [pos="PART"]	1	=	[pos="ADP"]
             [pos="PUNCT"] [pos="PART" & text="ས་"]	2	=	[pos="ADP"]
@@ -31,5 +32,6 @@ def test_suffix_bug():
             [pos="VERB"] [pos="NON_WORD"]	1	=	[pos="OOV"]
             [pos="VERB"] [] [text=".*ཆད་"]	1	=	[pos="ADV"]
             [pos="NOUN"] [pos="SCONJ"]	2	=	[pos="ADP"]
-            [pos="DET"] [pos="SCONJ"]	2	=	[pos="ADP"]""")
+            [pos="DET"] [pos="SCONJ"]	2	=	[pos="ADP"]"""
+    )
     assert rules == expected

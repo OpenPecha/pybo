@@ -8,7 +8,8 @@ def test_parse_manually_corrected():
     dump = Path(__file__).parent / "resources/step2/manually_corrected.txt"
     dump = dump.read_text(encoding="utf-8-sig")
     data = extract_new_entries(dump, Path(__file__).parent / "resources/main")
-    assert data == dedent("""\
+    assert data == dedent(
+        """\
             # form	pos	lemma	sense	freq
             །_		།		12
             །_	PUNCT			
@@ -25,4 +26,5 @@ def test_parse_manually_corrected():
             རྟག་	NOUN			
             རྟག་	NOUN	རྟག་པ་		
             ཤོག་	AUX			
-            ཤོག་	AUXr			""")
+            ཤོག་	AUXr			"""
+    )

@@ -58,12 +58,7 @@ def prepare_folder(main=None, custom=None, overwrite=False):
     else:
         custom = Path(custom)
     custom.mkdir(exist_ok=True)
-    for dir in [
-        "adjustment",
-        "remove",
-        "words",
-        "words_skrt",
-    ]:
+    for dir in ["adjustment", "remove", "words", "words_skrt"]:
         Path(custom / dir).mkdir(exist_ok=True)
 
     return main, custom
@@ -119,7 +114,7 @@ def tok(**kwargs):
         adj_modifs=custom,
         adj_mode="custom",
         conf_path=main.parent,
-        build_trie=rebuild
+        build_trie=rebuild,
     )
 
     def pybo_tok(in_str):

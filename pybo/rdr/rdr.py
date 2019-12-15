@@ -55,7 +55,9 @@ def rdr(infile, outdir=None, keep="model"):
     log = r(str(infile), mode="train", verbose=True)
 
     # translate to adjustment tsv
-    rdr_rules = Path(infile.parent / (infile.name + ".RDR")).read_text(encoding="utf-8-sig")
+    rdr_rules = Path(infile.parent / (infile.name + ".RDR")).read_text(
+        encoding="utf-8-sig"
+    )
     rules = rdr_2_replace_matcher(rdr_rules)
 
     # remove RDR files and copy them if needed
