@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.6.21](https://github.com/Esukhia/pybo/releases/tag/v0.6.21) - 20191215
+### Added
+ * add profile-update to CLI
+### Changed
+ * use Token.text_cleaned whenever possible, fallback to Token.text otherwise
+ * output of `pybo rdr` and `pybo profile-report`
+
 ## [0.6.20](https://github.com/Esukhia/pybo/releases/tag/v0.6.20) - 20191213
 ### Added
  * Support for `object.suffixL<X>` in CQL rule creation.

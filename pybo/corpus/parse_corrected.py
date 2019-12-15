@@ -2,13 +2,14 @@
 import re
 from .word_cleanup import word_cleanup
 from ..utils.profile_entries import profile_entries
+
 # from ..utils.bo_sorted import bo_sorted
 
 
 def parse_corrected(in_str):
     # prepare string: replace returns and tabs and multiple spaces by a single space
-    in_str = in_str.replace('\n', ' ').replace('\t', ' ')
-    in_str = re.sub(r'\s+', ' ', in_str)
+    in_str = in_str.replace("\n", " ").replace("\t", " ")
+    in_str = re.sub(r"\s+", " ", in_str)
 
     # parse
     sep_field = "/"
