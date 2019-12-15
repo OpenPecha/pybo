@@ -10,7 +10,7 @@ from .rdr_2_replace_matcher import rdr_2_replace_matcher
 def rdr_postprocess(rules, infile, outdir=None, keep="model"):
     suffixes = [".DICT", ".INIT", ".RAW", ".RDR", ".sDict"]
     if not outdir:
-        outdir = infile.parent
+        outdir = infile.parent.parent
     else:
         outdir = Path(outdir)
 
@@ -38,7 +38,6 @@ def rdr_postprocess(rules, infile, outdir=None, keep="model"):
         elif keep == "none":
             Path(infile.parent / (infile.name + s)).unlink()
         else:
-            print("AAAAA", keep)
             raise SyntaxError("'keep' should either be 'all', 'model' or 'none'.")
 
 

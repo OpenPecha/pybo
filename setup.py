@@ -51,7 +51,7 @@ setuptools.setup(
         "License :: OSI Approved :: Apache Software License",
         "Natural Language :: Tibetan",
     ],
-    package_data={"pybo": ["third_party/*"]},
+    package_data={"pybo": ["third_party/*", "resources/*"]},
     python_requires=">=3.6",
     dependency_links=[
         # pyicu for Windows

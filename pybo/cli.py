@@ -14,7 +14,7 @@ from .utils.profile_report import profile_report as p_report
 from .pipeline.pipes import pybo_prep, pybo_mod, pybo_form
 from .rdr.rdr_2_replace_matcher import rdr_2_replace_matcher
 from .rdr.rdr import rdr as r
-
+from .corpus.parse_corrected import extract_new_entries
 
 
 @click.group()
@@ -60,9 +60,8 @@ def prepare_folder(main=None, custom=None, overwrite=False):
     custom.mkdir(exist_ok=True)
     for dir in [
         "adjustment",
-        "entry_data",
-        "words_bo",
-        "words_non_inflected",
+        "remove",
+        "words",
         "words_skrt",
     ]:
         Path(custom / dir).mkdir(exist_ok=True)
@@ -82,15 +81,18 @@ def prepare_folder(main=None, custom=None, overwrite=False):
     help="paths: main-profile, custom-profile",
 )
 @click.option("-w", "--overwrite", is_flag=True)
+@click.option("-r", "--rebuild-trie", is_flag=True)
 def tok(**kwargs):
     input_dir = Path(kwargs["input_dir"])
     if kwargs["o"] is not None:
         output_dir = Path(kwargs["o"])
     else:
-        output_dir = input_dir
+        output_dir = input_dir.parent / (input_dir.name + "_pos")
+        output_dir.mkdir(exist_ok=True)
     p = kwargs["p"]
     p2 = kwargs["p2"]
     overwrite = kwargs["overwrite"]
+    rebuild = kwargs["rebuild_trie"]
 
     # prepare folder folder to receive all the botok files
     if p and p2:
@@ -117,14 +119,13 @@ def tok(**kwargs):
         adj_modifs=custom,
         adj_mode="custom",
         conf_path=main.parent,
+        build_trie=rebuild
     )
 
     def pybo_tok(in_str):
         return wt.tokenize(in_str)
 
     for f in input_dir.glob("*.txt"):
-        if "_tok.txt" in str(f):  # do not re-tokenize tokenized files
-            continue
         out_file = output_dir / (f.stem + "_tok.txt")
         text = Text(f, out_file)
         text.custom_pipeline(pybo_prep, pybo_tok, pybo_mod, pybo_form)
@@ -174,15 +175,16 @@ def rdr2repl(**kwargs):
 def rdr(**kwargs):
     file_or_dir = Path(kwargs["input"])
     keep = "none" if kwargs["keep"] is None else kwargs["keep"]
+    out_dir = Path(kwargs["out_dir"]) if kwargs["out_dir"] else None
 
     log = None
     if file_or_dir.is_dir():
-        file = file_or_dir / file_or_dir.name
+        file = file_or_dir / (file_or_dir.name + "_rules")
         with open(file, encoding="utf-8-sig", mode="w") as tmp:
             # concatenate all the content of input
             for f in file_or_dir.glob("*.txt"):
-                tmp.write(f.read_text(encoding="utf-8-sig") + "\n")  # adding a return to file content
-        log = r(file, kwargs["out_dir"], keep=keep)
+                tmp.write(f.read_text(encoding="utf-8-sig") + " ")
+        log = r(file, outdir=out_dir, keep=keep)
         file.unlink()
     elif file_or_dir.is_file():
         log = r(file_or_dir, kwargs["out_dir"], keep=keep)
@@ -190,6 +192,32 @@ def rdr(**kwargs):
         click.echo(f'"{file_or_dir}" does not exist.')
 
     click.echo(log)
+
+
+# extract new entries from manually corrected texts + existing profile
+@cli.command()
+@click.argument("corrected-path", type=click.Path(exists=True))
+@click.argument("profile-path", type=click.Path(exists=True))
+@click.option("-o", "--out-dir", type=click.Path(exists=True))
+def profile_update(**kwargs):
+    corrected = Path(kwargs["corrected_path"])
+    profile = Path(kwargs["profile_path"])
+    out_dir = Path(kwargs["out_dir"]) if kwargs["out_dir"] else None
+
+    dump = ""
+    for f in corrected.glob("*.txt"):
+        dump += f.read_text(encoding="utf-8-sig") + "\n"
+
+    rules = extract_new_entries(dump, profile)
+    if not out_dir:
+        out = corrected.parent / (corrected.name + "_words.tsv")
+    else:
+        out = out_dir / (corrected.name + "_words.tsv")
+
+    if not out.parent.is_dir():
+        out.parent.mkdir(exist_ok=True)
+
+    out.write_text(rules, encoding="utf-8-sig")
 
 
 # FNR - Find and Replace with a list of regexes
