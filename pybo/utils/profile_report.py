@@ -42,7 +42,7 @@ def profile_report(pathname):
     data = reorder_data(data)
 
     # filter and format all entries that have similar forms over files
-    report = []
+    report = ["WORD\tENTRY\tFILE-NAME\tLINE-NUMBER"]
     count = defaultdict(int)
     for num, d in data:
         count[num] += 1
