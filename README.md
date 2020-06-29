@@ -14,7 +14,7 @@ pybo tokenizes Tibetan text into words.
 #### Getting started
 Requires to have Python3 installed.
 
-    pip3 install --user pybo
+    python3 -m pip install pybo
 
 #### Tokenizing a string
 
@@ -28,24 +28,24 @@ Loading Trie... (2s.)
 ཏེ །_། བདེ་གཤེགས་ སྲས་ ཀྱི་ སྡོམ་ ལ་ འཇུག་པ་ ནི །_། ལུང་ བཞིན་ མདོར་བསྡུས་ ནས་ ནི་ བརྗོད་པ ར་ བྱ །_།
 ```
 
-#### Tokenizing a file
+#### Tokenizing a list of files
 
-The command to tokenize a file is:
+The command to tokenize a list of files in a directory:
 ```
-pybo tok <path-to-file>
+pybo tok <path-to-directory>
 ```
 
-For example to tokenize the file `text.txt` with the following content:
+For example to tokenize the file `text.txt` in a directory `./document/` with the following content: 
 ```
 བཀྲ་ཤི་ས་བདེ་ལེགས་ཕུན་སུམ་ཚོགས། །རྟག་ཏུ་བདེ་བ་ཐོབ་པར་ཤོག། །
 ```
 
 I use the command:
 ```
-drupchen@drupchen:~$ pybo tok-file ~\Documents\text.txt
+$ pybo tok ./document/
 ```
 
-...which create `text_pybo.txt` containing:
+...which create a file `text.txt` in a directory `./document_pybo` containing:
 ```
 བཀྲ་ ཤི་ ས་ བདེ་ལེགས་ ཕུན་སུམ་ ཚོགས །_། རྟག་ ཏུ་ བདེ་བ་ ཐོབ་པ ར་ ཤོག །_།
 ```
