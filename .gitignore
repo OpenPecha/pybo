@@ -5,6 +5,7 @@
 usecases/canon_concordancer/input
 usecases/canon_concordancer/output
 .cache/
+botok.yaml
 
 ### Eclipse ###
 .metadata
@@ -259,7 +260,7 @@ venv.bak/
 .mypy_cache/
 
 ### VisualStudioCode ###
-.vscode/*
+.vscode
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
