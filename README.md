@@ -1,6 +1,7 @@
 <a target="_blank" rel="noopener noreferrer" href="http://www.montypython.net/sounds/sketches/exparrot.wav"> <img src=https://github.com/Esukhia/pybo/blob/master/pybo_logo.png width=150> </a>
 
 # PYBO - Tibetan NLP in Python
+[![PyPI version](https://badge.fury.io/py/pybo.svg)](https://badge.fury.io/py/pybo)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://black.readthedocs.io/en/stable/)
 
 
