@@ -2,7 +2,9 @@
 
 # PYBO - Tibetan NLP in Python
 [![PyPI version](https://badge.fury.io/py/pybo.svg)](https://badge.fury.io/py/pybo)
+![Test](https://github.com/Esukhia/pybo/workflows/Test/badge.svg)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://black.readthedocs.io/en/stable/)
+
 
 
 ## Overview
