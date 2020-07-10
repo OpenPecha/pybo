@@ -2,19 +2,20 @@ from pathlib import Path
 from shutil import rmtree
 
 import click
-from botok import Text, WordTokenizer, expose_data
-from botok import __version__ as botok__version__
-from pyewts import VERSION as pyewts__version__
 from bordr import __version__ as bordr__version
+from botok import Text, WordTokenizer
+from botok import __version__ as botok__version__
+from botok import expose_data
+from pyewts import VERSION as pyewts__version__
+
 from pybo import __version__ as pybo__version__
 
-
-from .utils.regex_batch_apply import get_regex_pairs, batch_apply_regex
-from .utils.profile_report import profile_report as p_report
-from .pipeline.pipes import pybo_prep, pybo_mod, pybo_form
-from .rdr.rdr_2_replace_matcher import rdr_2_replace_matcher
-from .rdr.rdr import rdr as r
 from .corpus.parse_corrected import extract_new_entries
+from .pipeline.pipes import pybo_form, pybo_mod, pybo_prep
+from .rdr.rdr import rdr as r
+from .rdr.rdr_2_replace_matcher import rdr_2_replace_matcher
+from .utils.profile_report import profile_report as p_report
+from .utils.regex_batch_apply import batch_apply_regex, get_regex_pairs
 
 
 @click.group()
@@ -67,6 +68,13 @@ def prepare_folder(main=None, custom=None, overwrite=False):
 # Tokenize file
 @cli.command()
 @click.argument("input-dir", type=click.Path(exists=True))
+@click.option(
+    "-t",
+    "--tags",
+    help="""Select and customize the tag order. Avaiable tags are:
+r-raw_text,t-clean_text, p-POS tag, l-lemma, s-sense.
+Usage: `-t tpl` will give for every token <clean-text>/<pos>/<lemma>""",
+)
 @click.option("-o", type=click.Path(exists=True))
 @click.option("-p", type=click.Path(exists=True), help="main-profile path")
 @click.option(
