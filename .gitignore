@@ -6,6 +6,7 @@ usecases/canon_concordancer/input
 usecases/canon_concordancer/output
 .cache/
 botok.yaml
+**/shelving_tok/
 
 ### Eclipse ###
 .metadata
