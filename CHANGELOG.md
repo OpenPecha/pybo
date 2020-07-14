@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.6.23](https://github.com/Esukhia/pybo/releases/tag/v0.6.23) - 20200714
+### Added
+ * syl-based content shelving and reinsertion #3
+
 ## [0.6.22](https://github.com/Esukhia/pybo/releases/tag/v0.6.22) - 20200710
 ### Added
  * #5 Add optional "--tags" to tok command to select and order token tags
