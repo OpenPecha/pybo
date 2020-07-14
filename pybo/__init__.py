@@ -1,13 +1,13 @@
 # coding: utf-8
 
-from botok import *
 import pyewts
+from botok import *
 
-from .utils.regex_batch_apply import get_regex_pairs, batch_apply_regex
-from .utils.profile_report import profile_report
+from .corpus.parse_corrected import extract_new_entries, parse_corrected
 
 # from .utils.bo_sorted import bo_sorted
-from .pipeline.pipes import pybo_prep, pybo_mod, pybo_form
-from .corpus.parse_corrected import parse_corrected, extract_new_entries
+from .pipeline.pipes import pybo_form, pybo_mod, pybo_prep
+from .utils.profile_report import profile_report
+from .utils.regex_batch_apply import batch_apply_regex, get_regex_pairs
 
-__version__ = "0.6.22"
+__version__ = "0.6.23"
