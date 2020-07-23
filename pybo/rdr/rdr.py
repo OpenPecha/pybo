@@ -14,8 +14,8 @@ def rdr_postprocess(rules, infile, outdir=None, keep="model"):
     else:
         outdir = Path(outdir)
 
-    # write adjustment file
-    adj_file = outdir / (infile.stem + ".tsv")
+    # write adjustment rules file
+    adj_file = outdir / (infile.stem + "_rules.tsv")
     adj_file.write_text(rules, encoding="utf-8-sig")
 
     # copy files to output directory

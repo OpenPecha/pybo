@@ -16,6 +16,9 @@ from pybo.rdr.rdr_2_replace_matcher import rdr_2_replace_matcher
 from pybo.utils.profile_report import profile_report as p_report
 from pybo.utils.regex_batch_apply import batch_apply_regex, get_regex_pairs
 
+DATA_DIR = Path.home() / "Documents" / "pybo" / "dialect_packs"
+DEFAULT_DPACK = "bo_general"
+
 
 @click.group()
 @click.version_option(pybo__version__)
@@ -177,28 +180,30 @@ def rdr2repl(**kwargs):
 # generate rdr rules
 @cli.command()
 @click.argument("input", type=click.Path(exists=True))
-@click.option("-o", "--out-dir", type=click.Path(exists=True))
+@click.option("-dp", type=str, help="Dialect pack name, default is bo_general")
 @click.option("-k", "--keep", type=str)
-def rdr(**kwargs):
+def extract_rules(**kwargs):
     file_or_dir = Path(kwargs["input"])
+    dialect_pack_name = kwargs["dp"] if kwargs["dp"] else DEFAULT_DPACK
+    out_dir = DATA_DIR / dialect_pack_name / "adjustments" / "rules"
     keep = "none" if kwargs["keep"] is None else kwargs["keep"]
-    out_dir = Path(kwargs["out_dir"]) if kwargs["out_dir"] else None
 
     log = None
+    click.echo("[INFO] Extracing adjustments rules ...")
     if file_or_dir.is_dir():
-        file = file_or_dir / (file_or_dir.name + "_rules")
+        file = file_or_dir / file_or_dir.name
         with open(file, encoding="utf-8-sig", mode="w") as tmp:
-            # concatenate all the content of input
             for f in file_or_dir.glob("*.txt"):
                 tmp.write(f.read_text(encoding="utf-8-sig") + " ")
         log = r(file, outdir=out_dir, keep=keep)
         file.unlink()
     elif file_or_dir.is_file():
-        log = r(file_or_dir, kwargs["out_dir"], keep=keep)
-    else:
-        click.echo(f'"{file_or_dir}" does not exist.')
+        log = r(file_or_dir, out_dir, keep=keep)
+        click.echo(f"[INFO] {file_or_dir} does not exist!")
 
     click.echo(log)
+    click.echo("[INFO] Completed !")
+    click.echo(f"[INFO] Added adjustments rules to {dialect_pack_name}")
 
 
 # extract new entries from manually corrected texts + existing profile
