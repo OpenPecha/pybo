@@ -6,7 +6,7 @@ cqlr = """
 ["སུ་"] [pos="PRON"] ["ནས་" & pos="SCONJ"]	3	=	[pos="SCONJ"]
 """
 
-cql_hfr_tag = {
+cql2hfr_tag = {
     '"ADJ"': "རྒྱན",
     '"ADP"': "སྦྱོར",
     '"ADV"': "བསྣན",
