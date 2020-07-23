@@ -31,7 +31,7 @@ cql_hfr_tag = {
 }
 
 
-def parse_cql(cql_result):
+def cqlr2hfr(cqlr):
     """Convert corpus queery language(cql) result to human friendly rule(hfr) which has UDPOS in Tibetan.
 
     Args:
@@ -66,4 +66,3 @@ if __name__ == "__main__":
     hfr_result = parse_cql(cql_result)
     Path("./hfr_result.txt").write_text(hfr_result, encoding="utf-8")
     Path("./cql_result.txt").write_text(parse_hfr(hfr_result), encoding="utf-8")
-
