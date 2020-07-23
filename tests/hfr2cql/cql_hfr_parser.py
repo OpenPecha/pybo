@@ -46,7 +46,7 @@ def cqlr2hfr(cqlr):
     return hfr_result
 
 
-def parse_hfr(hfr_result):
+def hfr2cqlr(hfr):
     """Convert human friendly rules(hfr) to corpus queery language result format.
 
     Args:
