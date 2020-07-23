@@ -2,6 +2,10 @@ from pathlib import Path
 
 from pybo import pyewts, Text
 
+from pybo.cli import prepare_folder
+
+prepare_folder()
+
 string = """ཤོག
 བཀྲ་ཤིས་"""
 t = Text(string)
