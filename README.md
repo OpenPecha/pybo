@@ -87,19 +87,18 @@ Many thanks to the companies and organizations who have supported pybo's develop
 - `third_party/rules.txt` is taken from [tibetan-collation](https://github.com/eroux/tibetan-collation/blob/master/implementations/Unicode/rules.txt).
 
 ## Maintainance
-
-Build the source dist:
-
-```
-rm -rf dist/
-python3 setup.py clean sdist
+First clone this repo. Create virtual environment and activate it. Then install the dependencies
+```bash
+$ pip install -e .
+$ pip install -r requirements.txt
 ```
 
-and upload on twine (version >= `1.11.0`) with:
+Next, setup up [pre-commit](https://pre-commit.com/) by creating pre-commit git hook
+```bash
+$ pre-commit install
+```
 
-```
-twine upload dist/*
-```
+That's all, Enjoy contributing 🎉🎉🎉
 
 ## License
 
