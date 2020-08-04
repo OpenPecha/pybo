@@ -108,4 +108,5 @@ contributors:
  * [Drupchen](https://github.com/drupchen)
  * [Élie Roux](https://github.com/eroux)
  * [Ngawang Trinley](https://github.com/ngawangtrinley)
+ * [Tenzin](https://github.com/10zinten)
  * Joyce Mackzenzie for reworking the logo
