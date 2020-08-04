@@ -1,5 +1,6 @@
-click
-PyYAML
-botok >= 0.7.4
-pyewts
-bordr
+pytest
+pre-commit
+black
+isort
+flake8
+coverage
