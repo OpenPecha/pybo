@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from pybo.utils.monlam2wordlist import csv_loader, monlan2wordlist, parse_attrs
+from pybo.monlam2wordlist import csv_loader, monlan2wordlist, parse_attrs
 
 data_path = Path("./tests/data/monlam2020/")
 testcases_to_try = (
