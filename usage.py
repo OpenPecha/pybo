@@ -1,7 +1,6 @@
 from pathlib import Path
 
-from pybo import pyewts, Text
-
+from pybo import Text, pyewts
 from pybo.cli import prepare_folder
 
 prepare_folder()

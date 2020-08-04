@@ -1,7 +1,8 @@
 # coding: utf-8
 import re
-from .word_cleanup import word_cleanup
+
 from ..utils.profile_entries import profile_entries
+from .word_cleanup import word_cleanup
 
 # from ..utils.bo_sorted import bo_sorted
 

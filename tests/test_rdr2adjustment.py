@@ -5,7 +5,7 @@ from pybo.rdr.rdr_2_replace_matcher import rdr_2_replace_matcher
 
 
 def test_suffix_bug():
-    dump = Path("tests/resources/rdr_rules.txt").read_text(encoding='utf-8')
+    dump = Path("tests/resources/rdr_rules.txt").read_text(encoding="utf-8")
     rules = rdr_2_replace_matcher(dump)
     expected = dedent(
         """\
