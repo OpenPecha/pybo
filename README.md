@@ -55,7 +55,7 @@ $ pybo tok ./document/
 
 ### Sorting Tibetan words
 ```bash
-drupchen@drupchen:~$ pybo kakha to-sort.txt
+$ pybo kakha to-sort.txt
 ```
 The expected input is one word or entry per line in a .txt file. The file will be overwritten.
 
