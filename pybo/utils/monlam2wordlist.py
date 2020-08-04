@@ -51,10 +51,6 @@ def parse_attrs(text):
 def monlan2wordlist(rows):
     for row in rows:
         *_, form, result = row
-        import pdb
-
-        if form == "ལ་":
-            pdb.set_trace()
         attrs = parse_attrs(result)
         print(row)
     return word_list_rows
