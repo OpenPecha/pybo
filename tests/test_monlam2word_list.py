@@ -2,5 +2,7 @@ import pytest
 
 from pybo.utils.monlam2wordlist import csv_loader, monlan2wordlist, parse_attrs
 
+def
 
-def test_parse_attrs():
+parse_to_try = (
+)
