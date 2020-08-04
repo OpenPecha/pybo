@@ -3,7 +3,7 @@ from shutil import rmtree
 
 import click
 from bordr import __version__ as bordr__version
-from botok import Text, WordTokenizer
+from botok import Config, Text, WordTokenizer
 from botok import __version__ as botok__version__
 from botok import expose_data
 from pyewts import VERSION as pyewts__version__
@@ -78,13 +78,15 @@ t-clean_text, p-pos, l-lemma, s-sense.\n
 Usage: `-t tpl` will give for every token `<raw-text>/<clean-text>/<pos>/<lemma>`
 and will give just `<raw-text>` if tag option is not specified.""",
 )
-@click.option("-o", type=click.Path(exists=True))
-@click.option("-p", type=click.Path(exists=True), help="main-profile path")
 @click.option(
-    "-p2",
-    multiple=True,
-    type=(click.Path(exists=True), click.Path(exists=True)),
-    help="paths: main-profile, custom-profile",
+    "-o", type=click.Path(exists=True), help="output dir, default is the input_dir"
+)
+@click.option("-d", "--dialect-name", type=str, help="official dialect pack name.")
+@click.option(
+    "-p",
+    "--dialect-path",
+    type=click.Path(exists=True),
+    help="path to the dialect pack",
 )
 @click.option("-w", "--overwrite", is_flag=True)
 @click.option("-r", "--rebuild-trie", is_flag=True)
@@ -95,38 +97,20 @@ def tok(**kwargs):
     else:
         output_dir = input_dir.parent / (input_dir.name + "_tok")
         output_dir.mkdir(exist_ok=True)
-    p = kwargs["p"]
-    p2 = kwargs["p2"]
+
+    dialect_name = kwargs["dialect_name"]
+    dialect_path = kwargs["dialect_path"]
     overwrite = kwargs["overwrite"]
     rebuild = kwargs["rebuild_trie"]
 
-    # prepare folder folder to receive all the botok files
-    if p and p2:
-        click.echo(
-            "Choose either -p or -p2 for the tokenizer's profiles, not both\nExiting"
-        )
-        exit(1)
-
-    if p:
-        main, custom = prepare_folder(p, overwrite=overwrite)
-        click.echo("main profile: " + p)
-    elif p2:
-        main, custom = prepare_folder(p2[0][0], p2[0][1], overwrite=overwrite)
-        click.echo("main/custom profiles: " + str(p2))
+    if dialect_name:
+        config = Config(dialect_name=dialect_name)
+    elif dialect_name:
+        config = Config.from_path(dialect_path)
     else:
-        main, custom = prepare_folder(overwrite=overwrite)
-        click.echo("using default profile")
+        config = Config()
 
-    wt = WordTokenizer(
-        tok_profile=main,
-        tok_modifs=custom,
-        tok_mode="custom",
-        adj_profile=main,
-        adj_modifs=custom,
-        adj_mode="custom",
-        conf_path=main.parent,
-        build_trie=rebuild,
-    )
+    wt = WordTokenizer(config=config, build_trie=rebuild)
 
     def pybo_tok(in_str):
         return wt.tokenize(in_str)
@@ -147,6 +131,25 @@ def tok(**kwargs):
 def tok_string(**kwargs):
     t = Text(kwargs["string"])
     click.echo(t.tokenize_words_raw_lines)
+
+
+# lists
+tag_types = ["pos", "lemma", "sense"]
+
+
+@cli.command()
+@click.argument("input-dir", type=click.Path(exists=True))
+@click.option(
+    "-t", "--type",
+)
+def lists(**kwargs):
+    path = Path(kwargs["path"])
+
+    text_string = ""
+    for f in path.glob("*.txt"):
+        text += f.read_text(encoding="utf-8-sig")
+
+    token["sd"]
 
 
 # create report for botok profiles
@@ -209,18 +212,18 @@ def extract_rules(**kwargs):
 # extract new entries from manually corrected texts + existing profile
 @cli.command()
 @click.argument("corrected-path", type=click.Path(exists=True))
-@click.argument("profile-path", type=click.Path(exists=True))
+@click.argument("dialect_path", type=click.Path(exists=True))
 @click.option("-o", "--out-dir", type=click.Path(exists=True))
 def profile_update(**kwargs):
     corrected = Path(kwargs["corrected_path"])
-    profile = Path(kwargs["profile_path"])
+    dialect_path = Path(kwargs["dialect_path"])
     out_dir = Path(kwargs["out_dir"]) if kwargs["out_dir"] else None
 
     dump = ""
     for f in corrected.glob("*.txt"):
         dump += f.read_text(encoding="utf-8-sig") + "\n"
 
-    rules = extract_new_entries(dump, profile)
+    rules = extract_new_entries(dump, dialect_path)
     if not out_dir:
         out = corrected.parent / (corrected.name + "_words.tsv")
     else:
