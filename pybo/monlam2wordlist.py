@@ -1,6 +1,8 @@
 import csv
 import re
 
+from botok import Text
+
 ID = -1
 
 POS_NAMES = (" མིང་ཚིག ", " བྱ་ཚིག ", " བྱེད་ཚིག ", " གྲོགས་ཚིག ")
@@ -168,7 +170,28 @@ def get_tag_list(definition_list):
 
 
 def get_sense_tag_list(tag_list):
-    pass
+    """Parse sense from definition.
+
+    Sense here the first word of the given definition.
+
+    Returns:
+        sense_tag_list (list): [(pos, tag, sense_tag, definition), ...]
+
+    """
+
+    def get_first_segment(text, delimiter=" "):
+        seg_idx = text.find(delimiter)
+        if seg_idx == -1:
+            return text
+        return text[:seg_idx]
+
+    sense_tag_list = []
+    for *pos_and_tag, definition in tag_list:
+        first_segment = get_first_segment(definition)
+        tokenized_segment = Text(first_segment).tokenize_words_raw_text
+        sense = get_first_segment(tokenized_segment)
+        sense_tag_list.append((*pos_and_tag, sense, definition))
+    return sense_tag_list
 
 
 def get_example_list(sense_tag_list):
