@@ -3,7 +3,7 @@ import re
 
 ID = -1
 
-POS_NAMES = ("མིང་ཚིག", "བྱ་ཚིག", "བྱེད་ཚིག", "གྲོགས་ཚིག")
+POS_NAMES = (" མིང་ཚིག ", " བྱ་ཚིག ", " བྱེད་ཚིག ", " གྲོགས་ཚིག ")
 
 
 def create_word(
@@ -54,6 +54,25 @@ def get_single_pos(chunk_containing_pos):
     return pos, pos_content
 
 
+def find_all_remaining_pos(chunk):
+    """Return all pos position and it's length.
+
+    Return:
+        pos_start_idxs (list): [(pos_start_idx, len(pos_name)), ...] sorted on pos_start_idx.
+
+    """
+    pos_start_idxs = []
+    pos_found = False
+    for pos_name in POS_NAMES:
+        pos_found = True
+        pos_start_idx = chunk.find(pos_name)
+        if pos_start_idx != -1:
+            pos_start_idxs.append((pos_start_idx, len(pos_name)))
+    if pos_found:
+        pos_start_idxs.append((len(chunk), 0))
+    return sorted(pos_start_idxs, key=lambda x: x[0])
+
+
 def get_pos_list(text):
     """Parse pos and it's content (mon_tags, definitions) in string.
 
@@ -74,41 +93,69 @@ def get_pos_list(text):
     else:  # multi_pos_multi_senses
         pos = chunks_containing_pos[0]
         for i, chunk_containing_pos in enumerate(chunks_containing_pos[1:]):
-            if i == estimated_n_pos - 2:  # if last chunk, check for pos
-                found_next_pos = False
-                for pos_name in POS_NAMES:
-                    next_pos_char_start_idx = chunk_containing_pos.find(pos_name)
-                    if next_pos_char_start_idx != -1:
-                        found_next_pos = True
-                        pos_content = chunk_containing_pos[
-                            : next_pos_char_start_idx - 1
-                        ]
-                        pos_list.append((pos, pos_content))
-                        pos, pos_content = get_single_pos(
-                            chunk_containing_pos[next_pos_char_start_idx:]
-                        )
-                        pos_list.append((pos, pos_content))
-                if not found_next_pos:
+            if i == estimated_n_pos - 2:  # if last chunk, check for all pos
+                new_chunk_start = 0
+                next_pos_start_idxs = find_all_remaining_pos(chunk_containing_pos)
+                for next_pos_start_idx, pos_name_len in next_pos_start_idxs:
+                    pos_content = chunk_containing_pos[
+                        new_chunk_start:next_pos_start_idx
+                    ]
+                    pos_list.append((pos, pos_content))
+                    pos = chunk_containing_pos[
+                        next_pos_start_idx : next_pos_start_idx + pos_name_len
+                    ].strip()
+                    new_chunk_start = next_pos_start_idx + pos_name_len
+                if not next_pos_start_idxs:
                     pos_list.append((pos, chunk_containing_pos))
             else:
-                next_pos_char_start_idx = chunk_containing_pos.rfind(" ")
-                pos_content = chunk_containing_pos[:next_pos_char_start_idx]
+                next_pos_start_idx = chunk_containing_pos.rfind(" ")
+                pos_content = chunk_containing_pos[:next_pos_start_idx]
                 pos_list.append((pos, pos_content))
-                pos = chunk_containing_pos[next_pos_char_start_idx + 1 :]
+                pos = chunk_containing_pos[next_pos_start_idx + 1 :]
 
     return pos_list
 
 
-def parse_attrs(text):
-    pos_list = get_pos_list(text)
-    print(pos_list)
+def get_definition_list(pos_list):
+    """Parse definitions from pos_content.
+
+    Returns:
+        definition_list (list): [(pos, definition-content), ...]
+
+    """
+    definition_list = []
+    for pos, pos_content in pos_list:
+        for definition_content in re.split(r" \d\. ", pos_content):
+            definition_list.append((pos, definition_content))
+    return definition_list
+
+
+def get_tag_list(definition_list):
+    pass
+
+
+def get_sense_tag_list(tag_list):
+    pass
+
+
+def get_example_list(sense_tag_list):
+    pass
+
+
+def parse_attrs(form, text_containing_attrs):
+    pos_list = get_pos_list(text_containing_attrs)
+    definition_list = get_definition_list(pos_list)
+    tag_list = get_tag_list(definition_list)
+    sense_tag_list = get_sense_tag_list(tag_list)
+    example_list = get_example_list(sense_tag_list)
+    return example_list
 
 
 def monlam2wordlist(rows):
     word_list_rows = []
     for row in rows:
         *_, form, result = row
-        attrs = parse_attrs(result)
+        attrs = parse_attrs(form, result)
         print(row, attrs)
     return word_list_rows
 
