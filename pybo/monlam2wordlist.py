@@ -6,6 +6,21 @@ ID = -1
 POS_NAMES = (" མིང་ཚིག ", " བྱ་ཚིག ", " བྱེད་ཚིག ", " གྲོགས་ཚིག ")
 
 
+class cols:
+    ID = "ID"
+    FORM = "Form"
+    LEMMA = "Lemma"
+    MON_POS = "MonPOS"
+    MON_FEATURE = "MonFeature"
+    MON_TAG = "MonTag"
+    POS = "POS"
+    FEATURE = "Feature"
+    MORPH = "Morph"
+    SENSE_TAG = "SenseTag"
+    DEFINITION = "Definition"
+    EXAMPLE = "Example"
+
+
 def create_word(
     form,
     lemma,
