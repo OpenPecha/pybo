@@ -146,7 +146,25 @@ def get_definition_list(pos_list):
 
 
 def get_tag_list(definition_list):
-    pass
+    """Parse monlam tag from definition content.
+
+    Returns:
+        tag_list (list): [(pos, tag, definition), ...]
+    """
+
+    def parse_tag(text):
+        if text[0] != "༡":
+            return "", text
+        tag_end_idx = text.find(" ")
+        tag = text[:tag_end_idx]
+        definition = text[tag_end_idx + 1 :]
+        return tag, definition
+
+    tag_list = []
+    for pos, definition_content in definition_list:
+        tag, definition = parse_tag(definition_content)
+        tag_list.append((pos, tag, definition))
+    return tag_list
 
 
 def get_sense_tag_list(tag_list):

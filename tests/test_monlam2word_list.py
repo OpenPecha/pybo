@@ -3,10 +3,10 @@ from pathlib import Path
 import pytest
 
 from pybo.monlam2wordlist import (
-    cols,
     csv_loader,
     get_definition_list,
     get_pos_list,
+    get_tag_list,
     monlam2wordlist,
     parse_attrs,
 )
@@ -19,11 +19,13 @@ parser_to_try = (
         "མིང་ཚིག ༡ཀ། ཀཀ། ཁཁ། གག།",
         [("མིང་ཚིག", "༡ཀ། ཀཀ། ཁཁ། གག།")],
         [("མིང་ཚིག", "༡ཀ། ཀཀ། ཁཁ། གག།")],
+        [("མིང་ཚིག", "༡ཀ།", "ཀཀ། ཁཁ། གག།")],
     ),
     (
         "མིང་ཚིག 1. ༡ཀ། ཀཀ། 2. ༡ཀ། ཁཁ། 3. གག།",
         [("མིང་ཚིག", "༡ཀ། ཀཀ། 2. ༡ཀ། ཁཁ། 3. གག།")],
         [("མིང་ཚིག", "༡ཀ། ཀཀ།"), ("མིང་ཚིག", "༡ཀ། ཁཁ།"), ("མིང་ཚིག", "གག།")],
+        [("མིང་ཚིག", "༡ཀ།", "ཀཀ།"), ("མིང་ཚིག", "༡ཀ།", "ཁཁ།"), ("མིང་ཚིག", "", "གག།")],
     ),
     (
         "མིང་ཚིག 1. ༡ཀ། ཀཀ། 2. ཁཁ། བྱེད་ཚིག 1. ཀཀ། 2. ༡ཀ། ཁཁ། གྲོགས་ཚིག ༡ཀ། ཀཀ། ཁཁ། བྱེད་ཚིག ཀཀ། ཁཁ།",
@@ -41,6 +43,14 @@ parser_to_try = (
             ("གྲོགས་ཚིག", "༡ཀ། ཀཀ། ཁཁ།"),
             ("བྱེད་ཚིག", "ཀཀ། ཁཁ།"),
         ],
+        [
+            ("མིང་ཚིག", "༡ཀ།", "ཀཀ།"),
+            ("མིང་ཚིག", "", "ཁཁ།"),
+            ("བྱེད་ཚིག", "", "ཀཀ།"),
+            ("བྱེད་ཚིག", "༡ཀ།", "ཁཁ།"),
+            ("གྲོགས་ཚིག", "༡ཀ།", "ཀཀ། ཁཁ།"),
+            ("བྱེད་ཚིག", "", "ཀཀ། ཁཁ།"),
+        ],
     ),
 )
 
@@ -56,9 +66,13 @@ def test_get_pos_list(parser_testcase):
 
 
 def test_get_definition_list(parser_testcase):
-    monlam_result_col, _, definition_expected = parser_testcase
-    pos_list = get_pos_list(monlam_result_col)
+    _, pos_list, definition_expected, *_ = parser_testcase
     assert get_definition_list(pos_list) == definition_expected
+
+
+def test_get_tag_list(parser_testcase):
+    _, _, definition_list, tag_expected = parser_testcase
+    assert get_tag_list(definition_list) == tag_expected
 
 
 data_path = Path("./tests/data/monlam2020/")
