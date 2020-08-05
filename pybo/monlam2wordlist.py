@@ -195,7 +195,21 @@ def get_sense_tag_list(tag_list):
 
 
 def get_example_list(sense_tag_list):
-    pass
+    """Parse example from the definition."""
+
+    def parse_example(text, example_tag="དཔེར་ན།"):
+        example_start_idx = text.rfind(example_tag)
+        if example_start_idx == -1:
+            return text, ""
+        definition = text[:example_start_idx].strip()
+        example = text[example_start_idx + len(example_tag) :].strip()
+        return definition, example
+
+    example_list = []
+    for *pos_tag_sense, definition in sense_tag_list:
+        definition, example = parse_example(definition)
+        example_list.append((*pos_tag_sense, definition, example))
+    return example_list
 
 
 def parse_attrs(form, text_containing_attrs):
