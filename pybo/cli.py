@@ -7,7 +7,7 @@ from botok import Text, WordTokenizer
 from botok import __version__ as botok__version__
 from botok import expose_data
 from pyewts import VERSION as pyewts__version__
-from tibetan_sort import TibetanSort
+from tibetan_sort import TibetanSort, __version__ as tibetan_sort__version__
 
 from pybo import __version__ as pybo__version__
 from pybo.corpus.parse_corrected import extract_new_entries
@@ -34,6 +34,7 @@ def info():
     click.echo("botok: " + botok__version__)
     click.echo("pyewts: " + pyewts__version__)
     click.echo("bordr: " + bordr__version)
+    click.echo("tibetan_sort: " + tibetan_sort__version__)
 
 
 def prepare_folder(main=None, custom=None, overwrite=False):
