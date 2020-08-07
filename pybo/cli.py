@@ -7,6 +7,7 @@ from botok import Text, WordTokenizer
 from botok import __version__ as botok__version__
 from botok import expose_data
 from pyewts import VERSION as pyewts__version__
+from tibetan_sort import TibetanSort
 
 from pybo import __version__ as pybo__version__
 from pybo.corpus.parse_corrected import extract_new_entries
@@ -167,14 +168,15 @@ def rdr2repl(**kwargs):
     outfile.write_text(processed, encoding="utf-8-sig")
 
 
-# # sort in the Tibetan order
-# @cli.command()
-# @click.argument("infile", type=click.Path(exists=True))
-# def kakha(**kwargs):
-#     infile = Path(kwargs["infile"])
-#     words = infile.read_text(encoding="utf-8-sig").split()
-#     words = bo_sorted(words)
-#     infile.write_text("\n".join(words), encoding="utf-8-sig")
+# sort in the Tibetan order
+@cli.command()
+@click.argument("infile", type=click.Path(exists=True))
+def kakha(**kwargs):
+    sort = TibetanSort()
+    infile = Path(kwargs["infile"])
+    words = infile.read_text(encoding="utf-8-sig").split()
+    words = sort.sort_list(words)
+    infile.write_text("\n".join(words), encoding="utf-8-sig")
 
 
 # generate rdr rules
