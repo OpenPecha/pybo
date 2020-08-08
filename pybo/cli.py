@@ -176,7 +176,9 @@ def kakha(**kwargs):
     sort = TibetanSort()
     infile = Path(kwargs["infile"])
     words = infile.read_text(encoding="utf-8-sig").split()
+    print(f'Sorting {infile.name}')
     words = sort.sort_list(words)
+    print(f'{infile.name} is sorted')
     infile.write_text("\n".join(words), encoding="utf-8-sig")
 
 
