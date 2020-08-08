@@ -9,4 +9,4 @@ from .pipeline.pipes import pybo_form, pybo_mod, pybo_prep
 from .utils.profile_report import profile_report
 from .utils.regex_batch_apply import batch_apply_regex, get_regex_pairs
 
-__version__ = "0.7.1"
+__version__ = "0.7.2"
