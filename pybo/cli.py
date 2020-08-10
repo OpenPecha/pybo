@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 from shutil import rmtree
 
@@ -7,7 +8,8 @@ from botok import Config, Text, WordTokenizer
 from botok import __version__ as botok__version__
 from botok import expose_data
 from pyewts import VERSION as pyewts__version__
-from tibetan_sort import TibetanSort, __version__ as tibetan_sort__version__
+from tibetan_sort import TibetanSort
+from tibetan_sort import __version__ as tibetan_sort__version__
 
 from pybo import __version__ as pybo__version__
 from pybo.corpus.parse_corrected import extract_new_entries
@@ -17,8 +19,11 @@ from pybo.rdr.rdr_2_replace_matcher import rdr_2_replace_matcher
 from pybo.utils.profile_report import profile_report as p_report
 from pybo.utils.regex_batch_apply import batch_apply_regex, get_regex_pairs
 
-DATA_DIR = Path.home() / "Documents" / "pybo" / "dialect_packs"
+HOME = Path.home()
+DIALECT_PACK_DIR = HOME / "Documents" / "pybo" / "dialect_packs"
 DEFAULT_DPACK = "bo_general"
+CONFIG_DIR = HOME / ".pybo"
+CONFIG_FILE = CONFIG_DIR / "config.json"
 
 
 @click.group()
@@ -69,6 +74,21 @@ def prepare_folder(main=None, custom=None, overwrite=False):
     return main, custom
 
 
+def save_config(dialect_pack_path):
+    config = {"dialect_pack_path": str(dialect_pack_path)}
+    if not CONFIG_DIR.is_dir():
+        CONFIG_DIR.mkdir(parents=True)
+    json.dump(config, CONFIG_FILE.open("w"))
+
+
+def load_config():
+    if not CONFIG_FILE.is_file():
+        return
+    else:
+        config = json.load(CONFIG_FILE.open())
+    return config
+
+
 # Tokenize file
 @cli.command()
 @click.argument("input-dir", type=click.Path(exists=True))
@@ -102,15 +122,28 @@ def tok(**kwargs):
 
     dialect_name = kwargs["dialect_name"]
     dialect_path = kwargs["dialect_path"]
-    overwrite = kwargs["overwrite"]
+    # overwrite = kwargs["overwrite"]
     rebuild = kwargs["rebuild_trie"]
 
+    # load botok config
     if dialect_name:
         config = Config(dialect_name=dialect_name)
-    elif dialect_name:
+        save_config(config.dialect_pack_path)
+    elif dialect_path:
         config = Config.from_path(dialect_path)
+        # config.dialect_pack_path = Path(dialect_pack_path)
+        save_config(config.dialect_pack_path)
     else:
-        config = Config()
+        pybo_config = load_config()
+        if not pybo_config:
+            config = Config()
+            save_config(config.dialect_pack_path)
+        else:
+            dialect_pack_path = pybo_config["dialect_pack_path"]
+            print(
+                f"[INFO] Using `{Path(dialect_pack_path).name}` dialect pack for tokenization ..."
+            )
+            config = Config.from_path(dialect_pack_path)
 
     wt = WordTokenizer(config=config, build_trie=rebuild)
 
@@ -141,17 +174,13 @@ tag_types = ["pos", "lemma", "sense"]
 
 @cli.command()
 @click.argument("input-dir", type=click.Path(exists=True))
-@click.option(
-    "-t", "--type",
-)
+@click.option("-t", "--type")
 def lists(**kwargs):
     path = Path(kwargs["path"])
 
     text_string = ""
     for f in path.glob("*.txt"):
-        text += f.read_text(encoding="utf-8-sig")
-
-    token["sd"]
+        text_string += f.read_text(encoding="utf-8-sig")
 
 
 # create report for botok profiles
@@ -179,9 +208,9 @@ def kakha(**kwargs):
     sort = TibetanSort()
     infile = Path(kwargs["infile"])
     words = infile.read_text(encoding="utf-8-sig").split()
-    print(f'Sorting {infile.name}')
+    print(f"Sorting {infile.name}")
     words = sort.sort_list(words)
-    print(f'{infile.name} is sorted')
+    print(f"{infile.name} is sorted")
     infile.write_text("\n".join(words), encoding="utf-8-sig")
 
 
@@ -193,7 +222,7 @@ def kakha(**kwargs):
 def extract_rules(**kwargs):
     file_or_dir = Path(kwargs["input"])
     dialect_pack_name = kwargs["dp"] if kwargs["dp"] else DEFAULT_DPACK
-    out_dir = DATA_DIR / dialect_pack_name / "adjustments" / "rules"
+    out_dir = DIALECT_PACK_DIR / dialect_pack_name / "adjustments" / "rules"
     keep = "none" if kwargs["keep"] is None else kwargs["keep"]
 
     log = None
@@ -277,4 +306,5 @@ def fnr(**kwargs):
 
 
 if __name__ == "__main__":
-    cli()
+    # cli()
+    save_config("test_path")
