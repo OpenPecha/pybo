@@ -2,8 +2,9 @@
 import re
 from .word_cleanup import word_cleanup
 from ..utils.profile_entries import profile_entries
+from tibetan_sort import TibetanSort
 
-# from ..utils.bo_sorted import bo_sorted
+sort = TibetanSort()
 
 
 def parse_corrected(in_str):
@@ -39,10 +40,10 @@ def extract_new_entries(in_str, profile_path):
         if (word not in entries or e_d not in entries[word]) and e_d not in entry_data:
             entry_data.append(e_d)
 
+
     # sort both lists
-    # words = bo_sorted(words)
-    # entry_data = bo_sorted(entry_data)
-    entry_data = sorted(entry_data)
+    # words = sort.sort_list(words)
+    entry_data = sort.sort_list(entry_data)
     entry_data = ["# form	pos	lemma	sense	freq"] + entry_data
 
     return "\n".join(entry_data)

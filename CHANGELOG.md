@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.7.2](https://github.com/Esukhia/pybo/releases/tag/v0.7.2) - 20200808
+### Added
+ * fix dependencies in setup.py
+
+## [0.7.1](https://github.com/Esukhia/pybo/releases/tag/v0.7.1) - 20200808
+### Added
+ * added tibetan_sort as dep, cleanup, kakha cli messages
+
+## [0.7.0](https://github.com/Esukhia/pybo/releases/tag/v0.7.0) - 20200807
+### Added
+ * added kakha using tibetan_sort
+
 ## [0.6.23](https://github.com/Esukhia/pybo/releases/tag/v0.6.23) - 20200714
 ### Added
  * syl-based content shelving and reinsertion #3

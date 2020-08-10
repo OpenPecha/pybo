@@ -3,3 +3,4 @@ PyYAML
 botok >= 0.7.4
 pyewts
 bordr
+tibetan_sort

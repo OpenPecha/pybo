@@ -7,6 +7,7 @@ from botok import Config, Text, WordTokenizer
 from botok import __version__ as botok__version__
 from botok import expose_data
 from pyewts import VERSION as pyewts__version__
+from tibetan_sort import TibetanSort, __version__ as tibetan_sort__version__
 
 from pybo import __version__ as pybo__version__
 from pybo.corpus.parse_corrected import extract_new_entries
@@ -33,6 +34,7 @@ def info():
     click.echo("botok: " + botok__version__)
     click.echo("pyewts: " + pyewts__version__)
     click.echo("bordr: " + bordr__version)
+    click.echo("tibetan_sort: " + tibetan_sort__version__)
 
 
 def prepare_folder(main=None, custom=None, overwrite=False):
@@ -170,14 +172,17 @@ def rdr2repl(**kwargs):
     outfile.write_text(processed, encoding="utf-8-sig")
 
 
-# # sort in the Tibetan order
-# @cli.command()
-# @click.argument("infile", type=click.Path(exists=True))
-# def kakha(**kwargs):
-#     infile = Path(kwargs["infile"])
-#     words = infile.read_text(encoding="utf-8-sig").split()
-#     words = bo_sorted(words)
-#     infile.write_text("\n".join(words), encoding="utf-8-sig")
+# sort in the Tibetan order
+@cli.command()
+@click.argument("infile", type=click.Path(exists=True))
+def kakha(**kwargs):
+    sort = TibetanSort()
+    infile = Path(kwargs["infile"])
+    words = infile.read_text(encoding="utf-8-sig").split()
+    print(f'Sorting {infile.name}')
+    words = sort.sort_list(words)
+    print(f'{infile.name} is sorted')
+    infile.write_text("\n".join(words), encoding="utf-8-sig")
 
 
 # generate rdr rules

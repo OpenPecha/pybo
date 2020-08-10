@@ -51,18 +51,9 @@ setuptools.setup(
         "License :: OSI Approved :: Apache Software License",
         "Natural Language :: Tibetan",
     ],
-    package_data={"pybo": ["third_party/*", "resources/*"]},
+    # package_data={"pybo": ["third_party/*", "resources/*"]},
     python_requires=">=3.6",
-    dependency_links=[
-        # pyicu for Windows
-        "https://download.lfd.uci.edu/pythonlibs/g5apjq5m/PyICU-2.3.1-cp38-cp38-win_amd64.whl",
-        "https://download.lfd.uci.edu/pythonlibs/g5apjq5m/PyICU-2.3.1-cp38-cp38-win32.whl",
-        "https://download.lfd.uci.edu/pythonlibs/g5apjq5m/PyICU-2.3.1-cp37-cp37m-win_amd64.whl",
-        "https://download.lfd.uci.edu/pythonlibs/g5apjq5m/PyICU-2.3.1-cp37-cp37m-win32.whl",
-        "https://download.lfd.uci.edu/pythonlibs/g5apjq5m/PyICU-2.3.1-cp36-cp36m-win_amd64.whl",
-        "https://download.lfd.uci.edu/pythonlibs/g5apjq5m/PyICU-2.3.1-cp36-cp36m-win32.whl",
-    ],
-    install_requires=["pyyaml", "click", "botok", "pyewts", "bordr"],
+    install_requires=["pyyaml", "click", "botok", "pyewts", "bordr", "tibetan_sort"],
     tests_require=["pytest"],
     entry_points={
         "console_scripts": ["pybo=pybo.cli:cli"]  # command=package.module:function
