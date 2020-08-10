@@ -3,10 +3,11 @@
 
 from __future__ import print_function
 
+import re
 from pathlib import Path
+
 import setuptools
 from pkg_resources import parse_version
-import re
 
 assert parse_version(setuptools.__version__) >= parse_version("38.6.0")
 

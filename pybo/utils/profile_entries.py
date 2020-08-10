@@ -1,6 +1,6 @@
 # coding: utf-8
-from pathlib import Path
 from collections import defaultdict
+from pathlib import Path
 
 
 def profile_entries(pathname):

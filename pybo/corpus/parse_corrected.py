@@ -1,8 +1,10 @@
 # coding: utf-8
 import re
-from .word_cleanup import word_cleanup
-from ..utils.profile_entries import profile_entries
+
 from tibetan_sort import TibetanSort
+
+from ..utils.profile_entries import profile_entries
+from .word_cleanup import word_cleanup
 
 sort = TibetanSort()
 
@@ -39,7 +41,6 @@ def extract_new_entries(in_str, profile_path):
         e_d = "\t".join(p)
         if (word not in entries or e_d not in entries[word]) and e_d not in entry_data:
             entry_data.append(e_d)
-
 
     # sort both lists
     # words = sort.sort_list(words)

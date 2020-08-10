@@ -59,11 +59,11 @@ def get_tag(token, tag_code):
     maps = {"r": "text", "t": "text_cleaned", "p": "pos", "l": "lemma", "s": "sense"}
     try:
         return token[maps[tag_code]]
-    except:
+    except Exception:
         return ""
 
 
-def pybo_mod(tokens, tag_codes=None):
+def pybo_mod(tokens, tag_codes=[]):
     """extract text/pos tuples from Token objects"""
     txt_tags = []
     for token in tokens:
@@ -88,7 +88,8 @@ def n_chunks(token):
 
 def pybo_form(tokens, sep=" ", shelved=None):
     """Format in a single string to be written to file"""
-    if shelved:
+    if not shelved:
+        print(shelved)
         out = []
         shelved_idx = 0
         syl_count = 0

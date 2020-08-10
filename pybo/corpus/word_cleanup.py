@@ -1,5 +1,5 @@
 # coding: utf-8
-from botok import TokChunks, NAMCHE, TSEK
+from botok import NAMCHE, TSEK, TokChunks
 
 
 def word_cleanup(string):
