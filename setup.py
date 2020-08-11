@@ -53,7 +53,7 @@ setuptools.setup(
         "Natural Language :: Tibetan",
     ],
     python_requires=">=3.6",
-    install_requires=["pyyaml", "click", "botok", "pyewts", "bordr", "tibetan_sort"],
+    install_requires=["pyyaml", "click", "botok", "pyewts", "bordr", "tibetan_sort", "pytest"],
     tests_require=["pytest"],
     entry_points={
         "console_scripts": ["bo=pybo.cli:cli"]  # command=package.module:function
