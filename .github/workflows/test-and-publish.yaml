@@ -1,4 +1,4 @@
-name: Test and Publish
+name: Publish
 
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
       run: |
         pytest tests/
   
-  release:
+  publish:
     
     needs: test
     runs-on: ubuntu-latest
