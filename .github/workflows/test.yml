@@ -29,5 +29,5 @@ jobs:
         pip install -e .
     - name: Test Coverage
       run: |
-        coverage run --source=penzoe -m pytest tests/
+        coverage run -m pytest tests/
         coverage report
