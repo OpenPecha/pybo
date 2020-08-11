@@ -99,7 +99,7 @@ Next, setup up [pre-commit](https://pre-commit.com/) by creating pre-commit git 
 ```bash
 $ pre-commit install
 ```
-Please follow the [augular commit message format](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-format)
+Please, follow [augular commit message format](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-format) for commit message. We have setup [python-semantic-release](https://github.com/relekang/python-semantic-release) to publish [pybo](https://pypi.org/project/pybo/) package automatically based on commit messages.
 
 That's all, Enjoy contributing 🎉🎉🎉
 
