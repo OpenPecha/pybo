@@ -88,7 +88,7 @@ Many thanks to the companies and organizations who have supported pybo's develop
 
 - `third_party/rules.txt` is taken from [tibetan-collation](https://github.com/eroux/tibetan-collation/blob/master/implementations/Unicode/rules.txt).
 
-## Maintainance
+## Contributing
 First clone this repo. Create virtual environment and activate it. Then install the dependencies
 ```bash
 $ pip install -e .
@@ -99,6 +99,7 @@ Next, setup up [pre-commit](https://pre-commit.com/) by creating pre-commit git 
 ```bash
 $ pre-commit install
 ```
+Please follow the [augular commit message format](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-format)
 
 That's all, Enjoy contributing 🎉🎉🎉
 
