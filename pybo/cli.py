@@ -140,10 +140,11 @@ def tok(**kwargs):
             save_config(config.dialect_pack_path)
         else:
             dialect_pack_path = pybo_config["dialect_pack_path"]
-            print(
-                f"[INFO] Using `{Path(dialect_pack_path).name}` dialect pack for tokenization ..."
-            )
             config = Config.from_path(dialect_pack_path)
+
+    print(
+        f"[INFO] Using `{config.dialect_pack_path.name}` dialect pack for tokenization ..."
+    )
 
     wt = WordTokenizer(config=config, build_trie=rebuild)
 
