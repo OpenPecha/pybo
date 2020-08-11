@@ -90,7 +90,7 @@ Many thanks to the companies and organizations who have supported pybo's develop
 First clone this repo. Create virtual environment and activate it. Then install the dependencies
 ```bash
 $ pip install -e .
-$ pip install -r requirements.txt
+$ pip install -r requirements-dev.txt
 ```
 
 Next, setup up [pre-commit](https://pre-commit.com/) by creating pre-commit git hook
