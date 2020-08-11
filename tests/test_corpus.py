@@ -1,9 +1,10 @@
 from pathlib import Path
 from textwrap import dedent
+import pytest
 
 from pybo import *
 
-
+@pytest.mark.skip(reason="old workflow")
 def test_parse_manually_corrected():
     dump = Path(__file__).parent / "resources/step2/manually_corrected.txt"
     dump = dump.read_text(encoding="utf-8-sig")

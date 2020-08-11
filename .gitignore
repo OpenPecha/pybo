@@ -8,6 +8,12 @@ usecases/canon_concordancer/output
 botok.yaml
 **/shelving_tok/
 
+*.DICT
+*.INIT
+*.RAW
+*.RDR
+*.sDict
+
 ### Eclipse ###
 .metadata
 bin/
