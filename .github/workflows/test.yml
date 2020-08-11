@@ -1,4 +1,4 @@
-name: Test all branches and PRs
+name: Test
 
 on:
   push:
