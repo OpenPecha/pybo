@@ -1,12 +1,15 @@
+import json
 from pathlib import Path
 from shutil import rmtree
 
 import click
 from bordr import __version__ as bordr__version
-from botok import Text, WordTokenizer
+from botok import Config, Text, WordTokenizer
 from botok import __version__ as botok__version__
 from botok import expose_data
 from pyewts import VERSION as pyewts__version__
+from tibetan_sort import TibetanSort
+from tibetan_sort import __version__ as tibetan_sort__version__
 
 from pybo import __version__ as pybo__version__
 from pybo.corpus.parse_corrected import extract_new_entries
@@ -15,6 +18,12 @@ from pybo.rdr.rdr import rdr as r
 from pybo.rdr.rdr_2_replace_matcher import rdr_2_replace_matcher
 from pybo.utils.profile_report import profile_report as p_report
 from pybo.utils.regex_batch_apply import batch_apply_regex, get_regex_pairs
+
+HOME = Path.home()
+DIALECT_PACK_DIR = HOME / "Documents" / "pybo" / "dialect_packs"
+DEFAULT_DPACK = "bo_general"
+CONFIG_DIR = HOME / ".pybo"
+CONFIG_FILE = CONFIG_DIR / "config.json"
 
 
 @click.group()
@@ -30,6 +39,7 @@ def info():
     click.echo("botok: " + botok__version__)
     click.echo("pyewts: " + pyewts__version__)
     click.echo("bordr: " + bordr__version)
+    click.echo("tibetan_sort: " + tibetan_sort__version__)
 
 
 def prepare_folder(main=None, custom=None, overwrite=False):
@@ -64,6 +74,21 @@ def prepare_folder(main=None, custom=None, overwrite=False):
     return main, custom
 
 
+def save_config(dialect_pack_path):
+    config = {"dialect_pack_path": str(dialect_pack_path)}
+    if not CONFIG_DIR.is_dir():
+        CONFIG_DIR.mkdir(parents=True)
+    json.dump(config, CONFIG_FILE.open("w"))
+
+
+def load_config():
+    if not CONFIG_FILE.is_file():
+        return
+    else:
+        config = json.load(CONFIG_FILE.open())
+    return config
+
+
 # Tokenize file
 @cli.command()
 @click.argument("input-dir", type=click.Path(exists=True))
@@ -75,13 +100,15 @@ t-clean_text, p-pos, l-lemma, s-sense.\n
 Usage: `-t tpl` will give for every token `<raw-text>/<clean-text>/<pos>/<lemma>`
 and will give just `<raw-text>` if tag option is not specified.""",
 )
-@click.option("-o", type=click.Path(exists=True))
-@click.option("-p", type=click.Path(exists=True), help="main-profile path")
 @click.option(
-    "-p2",
-    multiple=True,
-    type=(click.Path(exists=True), click.Path(exists=True)),
-    help="paths: main-profile, custom-profile",
+    "-o", type=click.Path(exists=True), help="output dir, default is the input_dir"
+)
+@click.option("-d", "--dialect-name", type=str, help="official dialect pack name.")
+@click.option(
+    "-p",
+    "--dialect-path",
+    type=click.Path(exists=True),
+    help="path to the dialect pack",
 )
 @click.option("-w", "--overwrite", is_flag=True)
 @click.option("-r", "--rebuild-trie", is_flag=True)
@@ -92,38 +119,34 @@ def tok(**kwargs):
     else:
         output_dir = input_dir.parent / (input_dir.name + "_tok")
         output_dir.mkdir(exist_ok=True)
-    p = kwargs["p"]
-    p2 = kwargs["p2"]
-    overwrite = kwargs["overwrite"]
+
+    dialect_name = kwargs["dialect_name"]
+    dialect_path = kwargs["dialect_path"]
+    # overwrite = kwargs["overwrite"]
     rebuild = kwargs["rebuild_trie"]
 
-    # prepare folder folder to receive all the botok files
-    if p and p2:
-        click.echo(
-            "Choose either -p or -p2 for the tokenizer's profiles, not both\nExiting"
-        )
-        exit(1)
-
-    if p:
-        main, custom = prepare_folder(p, overwrite=overwrite)
-        click.echo("main profile: " + p)
-    elif p2:
-        main, custom = prepare_folder(p2[0][0], p2[0][1], overwrite=overwrite)
-        click.echo("main/custom profiles: " + str(p2))
+    # load botok config
+    if dialect_name:
+        config = Config(dialect_name=dialect_name)
+        save_config(config.dialect_pack_path)
+    elif dialect_path:
+        config = Config.from_path(dialect_path)
+        # config.dialect_pack_path = Path(dialect_pack_path)
+        save_config(config.dialect_pack_path)
     else:
-        main, custom = prepare_folder(overwrite=overwrite)
-        click.echo("using default profile")
+        pybo_config = load_config()
+        if not pybo_config:
+            config = Config()
+            save_config(config.dialect_pack_path)
+        else:
+            dialect_pack_path = pybo_config["dialect_pack_path"]
+            config = Config.from_path(dialect_pack_path)
 
-    wt = WordTokenizer(
-        tok_profile=main,
-        tok_modifs=custom,
-        tok_mode="custom",
-        adj_profile=main,
-        adj_modifs=custom,
-        adj_mode="custom",
-        conf_path=main.parent,
-        build_trie=rebuild,
+    print(
+        f"[INFO] Using `{config.dialect_pack_path.name}` dialect pack for tokenization ..."
     )
+
+    wt = WordTokenizer(config=config, build_trie=rebuild)
 
     def pybo_tok(in_str):
         return wt.tokenize(in_str)
@@ -146,6 +169,21 @@ def tok_string(**kwargs):
     click.echo(t.tokenize_words_raw_lines)
 
 
+# lists
+tag_types = ["pos", "lemma", "sense"]
+
+
+@cli.command()
+@click.argument("input-dir", type=click.Path(exists=True))
+@click.option("-t", "--type")
+def lists(**kwargs):
+    path = Path(kwargs["path"])
+
+    text_string = ""
+    for f in path.glob("*.txt"):
+        text_string += f.read_text(encoding="utf-8-sig")
+
+
 # create report for botok profiles
 @cli.command()
 @click.argument("profile", type=click.Path(exists=True))
@@ -164,58 +202,63 @@ def rdr2repl(**kwargs):
     outfile.write_text(processed, encoding="utf-8-sig")
 
 
-# # sort in the Tibetan order
-# @cli.command()
-# @click.argument("infile", type=click.Path(exists=True))
-# def kakha(**kwargs):
-#     infile = Path(kwargs["infile"])
-#     words = infile.read_text(encoding="utf-8-sig").split()
-#     words = bo_sorted(words)
-#     infile.write_text("\n".join(words), encoding="utf-8-sig")
+# sort in the Tibetan order
+@cli.command()
+@click.argument("infile", type=click.Path(exists=True))
+def kakha(**kwargs):
+    sort = TibetanSort()
+    infile = Path(kwargs["infile"])
+    words = infile.read_text(encoding="utf-8-sig").split()
+    print(f"Sorting {infile.name}")
+    words = sort.sort_list(words)
+    print(f"{infile.name} is sorted")
+    infile.write_text("\n".join(words), encoding="utf-8-sig")
 
 
 # generate rdr rules
 @cli.command()
 @click.argument("input", type=click.Path(exists=True))
-@click.option("-o", "--out-dir", type=click.Path(exists=True))
+@click.option("-dp", type=str, help="Dialect pack name, default is bo_general")
 @click.option("-k", "--keep", type=str)
-def rdr(**kwargs):
+def extract_rules(**kwargs):
     file_or_dir = Path(kwargs["input"])
+    dialect_pack_name = kwargs["dp"] if kwargs["dp"] else DEFAULT_DPACK
+    out_dir = DIALECT_PACK_DIR / dialect_pack_name / "adjustments" / "rules"
     keep = "none" if kwargs["keep"] is None else kwargs["keep"]
-    out_dir = Path(kwargs["out_dir"]) if kwargs["out_dir"] else None
 
     log = None
+    click.echo("[INFO] Extracing adjustments rules ...")
     if file_or_dir.is_dir():
-        file = file_or_dir / (file_or_dir.name + "_rules")
+        file = file_or_dir / file_or_dir.name
         with open(file, encoding="utf-8-sig", mode="w") as tmp:
-            # concatenate all the content of input
             for f in file_or_dir.glob("*.txt"):
                 tmp.write(f.read_text(encoding="utf-8-sig") + " ")
         log = r(file, outdir=out_dir, keep=keep)
         file.unlink()
     elif file_or_dir.is_file():
-        log = r(file_or_dir, kwargs["out_dir"], keep=keep)
-    else:
-        click.echo(f'"{file_or_dir}" does not exist.')
+        log = r(file_or_dir, out_dir, keep=keep)
+        click.echo(f"[INFO] {file_or_dir} does not exist!")
 
     click.echo(log)
+    click.echo("[INFO] Completed !")
+    click.echo(f"[INFO] Added adjustments rules to {dialect_pack_name}")
 
 
 # extract new entries from manually corrected texts + existing profile
 @cli.command()
 @click.argument("corrected-path", type=click.Path(exists=True))
-@click.argument("profile-path", type=click.Path(exists=True))
+@click.argument("dialect_path", type=click.Path(exists=True))
 @click.option("-o", "--out-dir", type=click.Path(exists=True))
 def profile_update(**kwargs):
     corrected = Path(kwargs["corrected_path"])
-    profile = Path(kwargs["profile_path"])
+    dialect_path = Path(kwargs["dialect_path"])
     out_dir = Path(kwargs["out_dir"]) if kwargs["out_dir"] else None
 
     dump = ""
     for f in corrected.glob("*.txt"):
         dump += f.read_text(encoding="utf-8-sig") + "\n"
 
-    rules = extract_new_entries(dump, profile)
+    rules = extract_new_entries(dump, dialect_path)
     if not out_dir:
         out = corrected.parent / (corrected.name + "_words.tsv")
     else:
@@ -264,4 +307,5 @@ def fnr(**kwargs):
 
 
 if __name__ == "__main__":
-    cli()
+    # cli()
+    save_config("test_path")

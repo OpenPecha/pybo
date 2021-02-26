@@ -3,10 +3,11 @@
 
 from __future__ import print_function
 
+import re
 from pathlib import Path
+
 import setuptools
 from pkg_resources import parse_version
-import re
 
 assert parse_version(setuptools.__version__) >= parse_version("38.6.0")
 
@@ -51,20 +52,10 @@ setuptools.setup(
         "License :: OSI Approved :: Apache Software License",
         "Natural Language :: Tibetan",
     ],
-    package_data={"pybo": ["third_party/*", "resources/*"]},
     python_requires=">=3.6",
-    dependency_links=[
-        # pyicu for Windows
-        "https://download.lfd.uci.edu/pythonlibs/g5apjq5m/PyICU-2.3.1-cp38-cp38-win_amd64.whl",
-        "https://download.lfd.uci.edu/pythonlibs/g5apjq5m/PyICU-2.3.1-cp38-cp38-win32.whl",
-        "https://download.lfd.uci.edu/pythonlibs/g5apjq5m/PyICU-2.3.1-cp37-cp37m-win_amd64.whl",
-        "https://download.lfd.uci.edu/pythonlibs/g5apjq5m/PyICU-2.3.1-cp37-cp37m-win32.whl",
-        "https://download.lfd.uci.edu/pythonlibs/g5apjq5m/PyICU-2.3.1-cp36-cp36m-win_amd64.whl",
-        "https://download.lfd.uci.edu/pythonlibs/g5apjq5m/PyICU-2.3.1-cp36-cp36m-win32.whl",
-    ],
-    install_requires=["pyyaml", "click", "botok", "pyewts", "bordr"],
+    install_requires=["botok>=0.8", "pyyaml", "click", "pyewts", "bordr", "tibetan_sort", "pytest"],
     tests_require=["pytest"],
     entry_points={
-        "console_scripts": ["pybo=pybo.cli:cli"]  # command=package.module:function
+        "console_scripts": ["bo=pybo.cli:cli"]  # command=package.module:function
     },
 )

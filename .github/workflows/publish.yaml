@@ -1,12 +1,9 @@
-name: Test
+name: Publish
 
 on:
   push:
     branches:
-      - '*'
-  pull_request:
-    branches:
-      - '*'
+      - master
 
 jobs:
   test:
@@ -31,4 +28,20 @@ jobs:
         pip install -e .
     - name: Run Test
       run: |
-        pytest -vv
+        pytest tests/
+  
+  publish:
+    
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Python Semantic Release
+      uses: relekang/python-semantic-release@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        pypi_token: ${{ secrets.PYPI_TOKEN }}
