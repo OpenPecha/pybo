@@ -1,4 +1,4 @@
-from pybo.hfr_cqlr_converter import *
+from pybo.hfr_cqlr_converter import cqlr2hfr, hfr2cqlr
 import pytest
 
 
@@ -19,13 +19,16 @@ def hfr():
 
 
 def test_cql2hfr(cqlr, hfr):
-    hfr_result = cql2hfr(cqlr)
+    hfr_result = cqlr2hfr(cqlr)
     print(hfr_result)
     assert hfr_result == hfr
     print("Test pass..")
 
 
 def test_hfr2cql(hfr, cqlr):
-    cql_result = hfr2cql(hfr)
+    cql_result = hfr2cqlr(hfr)
     assert cql_result == cqlr
     print("Test pass..")
+
+if __name__ == "__main__":
+    test_cql2hfr(cqlr, hfr)

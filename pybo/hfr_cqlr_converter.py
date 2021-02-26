@@ -27,30 +27,30 @@ cql2hfr_tag = {
 
 
 def cqlr2hfr(cqlr_string):
-    """Convert corpus queery language(cql) result to human friendly rule(hfr) which has UDPOS in Tibetan.
+    """Convert corpus queery language(cql) rules to human friendly rules(hfr) which has UDPOS in Tibetan.
 
     Args:
-        cql_string (str): corpus queery language result
+        cql_string (str): corpus queery language rules
 
     Returns:
-        str: human friendly rule(in Tibetan language)
+        str: human friendly rules(in Tibetan language)
     """
     hfr_string = cqlr_string
-    for cql_tag, hfr_tag in cql_hfr_tag.items():
+    for cql_tag, hfr_tag in cql2hfr_tag.items():
         hfr_string = hfr_string.replace(cql_tag, hfr_tag)
     return hfr_string
 
 
 def hfr2cqlr(hfr_string):
-    """Convert human friendly rules(hfr) to corpus queery language result format.
+    """Convert human friendly rules(hfr) to corpus queery language rules format.
 
     Args:
         hfr_string (str): Human friendly rules(hfr)
 
     Returns:
-        str: Corpus queery language(cql) result format.
+        str: Corpus queery language(cql) rules format.
     """
     cql_string = hfr_string
-    for cql_tag, hfr_tag in cql_hfr_tag.items():
+    for cql_tag, hfr_tag in cql2hfr_tag.items():
         cql_string = cql_string.replace(hfr_tag, cql_tag)
     return cql_string
