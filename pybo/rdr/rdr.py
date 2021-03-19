@@ -6,6 +6,8 @@ from bordr import rdr as r
 
 from .rdr_2_replace_matcher import rdr_2_replace_matcher
 
+from pybo.hfr_cqlr_converter import cqlr2hfr
+
 
 def rdr_postprocess(rules, infile, outdir=None, keep="model"):
     suffixes = [".DICT", ".INIT", ".RAW", ".RDR", ".sDict"]
@@ -41,7 +43,7 @@ def rdr_postprocess(rules, infile, outdir=None, keep="model"):
             raise SyntaxError("'keep' should either be 'all', 'model' or 'none'.")
 
 
-def rdr(infile, outdir=None, keep="model"):
+def rdr(infile, outdir=None, keep="model", type="cql"):
     """
 
     :param infile: file to process. should be a POS tagged file
@@ -59,7 +61,8 @@ def rdr(infile, outdir=None, keep="model"):
         encoding="utf-8-sig"
     )
     rules = rdr_2_replace_matcher(rdr_rules)
-
+    if type is not "cql":
+        rules = cqlr2hfr(rules)
     # remove RDR files and copy them if needed
     rdr_postprocess(rules, infile, outdir=outdir, keep=keep)
 

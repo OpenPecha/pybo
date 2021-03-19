@@ -18,6 +18,7 @@ from pybo.rdr.rdr import rdr as r
 from pybo.rdr.rdr_2_replace_matcher import rdr_2_replace_matcher
 from pybo.utils.profile_report import profile_report as p_report
 from pybo.utils.regex_batch_apply import batch_apply_regex, get_regex_pairs
+from pybo.hfr_cqlr_converter import cqlr2hfr, hfr2cqlr
 
 HOME = Path.home()
 DIALECT_PACK_DIR = HOME / "Documents" / "pybo" / "dialect_packs"
@@ -220,11 +221,13 @@ def kakha(**kwargs):
 @click.argument("input", type=click.Path(exists=True))
 @click.option("-dp", type=str, help="Dialect pack name, default is bo_general")
 @click.option("-k", "--keep", type=str)
+@click.option('--type', type=str, help="Type can be either cql which is default type or hfr(Human friendly rule)")
 def extract_rules(**kwargs):
     file_or_dir = Path(kwargs["input"])
     dialect_pack_name = kwargs["dp"] if kwargs["dp"] else DEFAULT_DPACK
     out_dir = DIALECT_PACK_DIR / dialect_pack_name / "adjustments" / "rules"
     keep = "none" if kwargs["keep"] is None else kwargs["keep"]
+    type = "cql" if kwargs["type"] is None else kwargs["type"]
 
     log = None
     click.echo("[INFO] Extracing adjustments rules ...")
@@ -233,15 +236,35 @@ def extract_rules(**kwargs):
         with open(file, encoding="utf-8-sig", mode="w") as tmp:
             for f in file_or_dir.glob("*.txt"):
                 tmp.write(f.read_text(encoding="utf-8-sig") + " ")
-        log = r(file, outdir=out_dir, keep=keep)
+        log = r(file, outdir=out_dir, keep=keep, type=type)
         file.unlink()
     elif file_or_dir.is_file():
-        log = r(file_or_dir, out_dir, keep=keep)
+        log = r(file_or_dir, out_dir, keep=keep, type=type)
         click.echo(f"[INFO] {file_or_dir} does not exist!")
 
     click.echo(log)
     click.echo("[INFO] Completed !")
     click.echo(f"[INFO] Added adjustments rules to {dialect_pack_name}")
+
+#convert cql to hfr
+@cli.command()
+@click.argument("input", type=click.Path(exists=True))
+def convert_cql2hfr(**kwargs):
+    cql_path = Path(kwargs['input'])
+    hfr_path = cql_path.parent / (cql_path.stem + "_hfr.txt")
+    cql_rules = cql_path.read_text(encoding='utf-8')
+    hfr = cqlr2hfr(cql_rules)
+    hfr_path.write_text(hfr, encoding='utf-8')
+
+#convert hfr to cql
+@cli.command()
+@click.argument("input", type=click.Path(exists=True))
+def convert_hfr2cql(**kwargs):
+    hfr_path = Path(kwargs['input'])
+    cql_path = hfr_path.parent / (hfr_path.stem + "_cql.txt")
+    hfr = hfr_path.read_text(encoding='utf-8')
+    cql = hfr2cqlr(hfr)
+    cql_path.write_text(cql, encoding='utf-8')
 
 
 # extract new entries from manually corrected texts + existing profile
