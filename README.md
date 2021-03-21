@@ -11,7 +11,7 @@
 
 ## Overview
 
-pybo tokenizes Tibetan text into words.
+bo tokenizes Tibetan text into words.
 
 ### Basic usage
 
@@ -24,7 +24,7 @@ Requires to have Python3 installed.
 #### Tokenizing a string
 
 ```bash
-drupchen@drupchen:~$ pybo tok-string "༄༅། །རྒྱ་གར་སྐད་དུ། བོ་དྷི་སཏྭ་ཙརྻ་ཨ་བ་ཏ་ར། བོད་སྐད་དུ། བྱང་ཆུབ་སེམས་དཔའི་སྤྱོད་པ་ལ་འཇུག་པ། །
+drupchen@drupchen:~$ bo tok-string "༄༅། །རྒྱ་གར་སྐད་དུ། བོ་དྷི་སཏྭ་ཙརྻ་ཨ་བ་ཏ་ར། བོད་སྐད་དུ། བྱང་ཆུབ་སེམས་དཔའི་སྤྱོད་པ་ལ་འཇུག་པ། །
 སངས་རྒྱས་དང་བྱང་ཆུབ་སེམས་དཔའ་ཐམས་ཅད་ལ་ཕྱག་འཚལ་ལོ། །བདེ་གཤེགས་ཆོས་ཀྱི་སྐུ་མངའ་སྲས་བཅས་དང༌། །ཕྱག་འོས་ཀུན་ལའང་གུས་པར་ཕྱག་འཚལ་ཏེ། །བདེ་གཤེགས་
 སྲས་ཀྱི་སྡོམ་ལ་འཇུག་པ་ནི། །ལུང་བཞིན་མདོར་བསྡུས་ནས་ནི་བརྗོད་པར་བྱ། །"
 Loading Trie... (2s.)
@@ -37,7 +37,7 @@ Loading Trie... (2s.)
 
 The command to tokenize a list of files in a directory:
 ```
-pybo tok <path-to-directory>
+bo tok <path-to-directory>
 ```
 
 For example to tokenize the file `text.txt` in a directory `./document/` with the following content: 
@@ -47,7 +47,7 @@ For example to tokenize the file `text.txt` in a directory `./document/` with th
 
 I use the command:
 ```
-$ pybo tok ./document/
+$ bo tok ./document/
 ```
 
 ...which create a file `text.txt` in a directory `./document_pybo` containing:
@@ -57,14 +57,14 @@ $ pybo tok ./document/
 
 ### Sorting Tibetan words
 ```bash
-$ pybo kakha to-sort.txt
+$ bo kakha to-sort.txt
 ```
 The expected input is one word or entry per line in a .txt file. The file will be overwritten.
 
 ### FNR - Find and Replace with a list of regexes
 
 ```
-pybo fnr <in-dir> <regex-file> -o <out-dir> -t <tag>
+bo fnr <in-dir> <regex-file> -o <out-dir> -t <tag>
 ```
 `-o` and `-t` are optional
 
