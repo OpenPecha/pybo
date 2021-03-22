@@ -115,12 +115,6 @@ and will give just `<raw-text>` if tag option is not specified.""",
 @click.option("-r", "--rebuild-trie", is_flag=True)
 def tok(**kwargs):
     input_dir = Path(kwargs["input_dir"])
-    if kwargs["o"] is not None:
-        output_dir = Path(kwargs["o"])
-    else:
-        output_dir = input_dir.parent / (input_dir.name + "_tok")
-        output_dir.mkdir(exist_ok=True)
-
     dialect_name = kwargs["dialect_name"]
     dialect_path = kwargs["dialect_path"]
     # overwrite = kwargs["overwrite"]
@@ -156,10 +150,28 @@ def tok(**kwargs):
     if kwargs["tags"]:
         pybo_mod.__defaults__ = (list(kwargs["tags"]),)
 
-    for f in input_dir.glob("*.txt"):
-        out_file = output_dir / (f.stem + "_tok.txt")
-        text = Text(f, out_file)
+    if input_dir.is_dir():
+        if kwargs["o"] is not None:
+            output_dir = Path(kwargs["o"])
+        else:
+            output_dir = input_dir.parent / (input_dir.name + "_tok")
+            output_dir.mkdir(exist_ok=True)
+        for f in input_dir.glob("*.txt"):
+            out_file = output_dir / (f.stem + "_tok.txt")
+            text = Text(f, out_file)
+            text.custom_pipeline(pybo_prep, pybo_tok, pybo_mod, pybo_form)
+    elif input_dir.is_file():
+        input_file = input_dir
+        if kwargs["o"] is not None:
+            output_dir = Path(kwargs["o"])
+        else:
+            output_dir = input_file.parent / (input_file.stem + "_tok")
+            output_dir.mkdir(exist_ok=True)
+        out_file = output_dir / (input_file.stem + "_tok.txt")
+        text = Text(input_file, out_file)
         text.custom_pipeline(pybo_prep, pybo_tok, pybo_mod, pybo_form)
+    else:
+        print("[INFO] Invalid input directory or file!!!")
 
 
 # Tokenize string
