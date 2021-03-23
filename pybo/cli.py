@@ -237,9 +237,13 @@ def kakha(**kwargs):
 def extract_rules(**kwargs):
     file_or_dir = Path(kwargs["input"])
     dialect_pack_name = kwargs["dp"] if kwargs["dp"] else DEFAULT_DPACK
-    out_dir = DIALECT_PACK_DIR / dialect_pack_name / "adjustments" / "rules"
     keep = "none" if kwargs["keep"] is None else kwargs["keep"]
     type = "cql" if kwargs["type"] is None else kwargs["type"]
+    if type == "cql":
+        out_dir = DIALECT_PACK_DIR / dialect_pack_name / "adjustments" / "rules"
+    else:
+        out_dir = DIALECT_PACK_DIR / dialect_pack_name / "adjustments" / "hfr_rules"
+        out_dir.mkdir(exist_ok=True)
 
     log = None
     click.echo("[INFO] Extracing adjustments rules ...")
@@ -261,22 +265,30 @@ def extract_rules(**kwargs):
 #convert cql to hfr
 @cli.command()
 @click.argument("input", type=click.Path(exists=True))
+@click.option("-dp", type=str, help="Dialect pack name, default is bo_general")
 def convert_cql2hfr(**kwargs):
     cql_path = Path(kwargs['input'])
-    hfr_path = cql_path.parent / (cql_path.stem + "_hfr.txt")
+    dialect_pack_name = kwargs["dp"] if kwargs["dp"] else DEFAULT_DPACK
+    hfr_dir = DIALECT_PACK_DIR / dialect_pack_name / "adjustments" / "hfr_rules"
+    hfr_dir.mkdir(exist_ok=True) 
+    hfr_file_path = hfr_dir / (cql_path.stem + "_hfr.tsv")
     cql_rules = cql_path.read_text(encoding='utf-8')
     hfr = cqlr2hfr(cql_rules)
-    hfr_path.write_text(hfr, encoding='utf-8')
+    hfr_file_path.write_text(hfr, encoding='utf-8')
 
 #convert hfr to cql
 @cli.command()
 @click.argument("input", type=click.Path(exists=True))
+@click.option("-dp", type=str, help="Dialect pack name, default is bo_general")
 def convert_hfr2cql(**kwargs):
     hfr_path = Path(kwargs['input'])
-    cql_path = hfr_path.parent / (hfr_path.stem + "_cql.txt")
+    dialect_pack_name = kwargs["dp"] if kwargs["dp"] else DEFAULT_DPACK
+    cql_dir = DIALECT_PACK_DIR / dialect_pack_name / "adjustments" / "rules"
+    cql_dir.mkdir(exist_ok = True)
+    cql_file_path = cql_dir / (hfr_path.stem + "_cql.tsv")
     hfr = hfr_path.read_text(encoding='utf-8')
     cql = hfr2cqlr(hfr)
-    cql_path.write_text(cql, encoding='utf-8')
+    cql_file_path.write_text(cql, encoding='utf-8')
 
 
 # extract new entries from manually corrected texts + existing profile
