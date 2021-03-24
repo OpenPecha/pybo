@@ -22,7 +22,7 @@ from pybo.hfr_cqlr_converter import cqlr2hfr, hfr2cqlr
 
 HOME = Path.home()
 DIALECT_PACK_DIR = HOME / "Documents" / "pybo" / "dialect_packs"
-DEFAULT_DPACK = "bo_general"
+DEFAULT_DPACK = "general"
 CONFIG_DIR = HOME / ".pybo"
 CONFIG_FILE = CONFIG_DIR / "config.json"
 
@@ -242,7 +242,7 @@ def extract_rules(**kwargs):
     if type == "cql":
         out_dir = DIALECT_PACK_DIR / dialect_pack_name / "adjustments" / "rules"
     else:
-        out_dir = DIALECT_PACK_DIR / dialect_pack_name / "adjustments" / "hfr_rules"
+        out_dir = DIALECT_PACK_DIR / dialect_pack_name / "hfr_rules"
         out_dir.mkdir(exist_ok=True)
 
     log = None
@@ -269,7 +269,7 @@ def extract_rules(**kwargs):
 def convert_cql2hfr(**kwargs):
     cql_path = Path(kwargs['input'])
     dialect_pack_name = kwargs["dp"] if kwargs["dp"] else DEFAULT_DPACK
-    hfr_dir = DIALECT_PACK_DIR / dialect_pack_name / "adjustments" / "hfr_rules"
+    hfr_dir = DIALECT_PACK_DIR / dialect_pack_name / "hfr_rules"
     hfr_dir.mkdir(exist_ok=True) 
     hfr_file_path = hfr_dir / (cql_path.stem + "_hfr.tsv")
     cql_rules = cql_path.read_text(encoding='utf-8')
