@@ -10,7 +10,7 @@ def test_tok():
 
 def test_extract_rules():
     runner = CliRunner()
-    runner.invoke(cli, ["extract-rules", "tests/resources/step2/"])
+    runner.invoke(cli, ["extract-rules", "tests/resources/step2/step2"])
 
 def test_convert_cql2hfr():
     runner = CliRunner()
@@ -18,4 +18,4 @@ def test_convert_cql2hfr():
 
 def test_convert_hfr2cql():
     runner = CliRunner()
-    runner.invoke(cli, ["convert-hfr2cql", "tests/resources/step2/hfr.txt"])
+    runner.invoke(cli, ["convert-hfr2cql", "tests/resources/step2/test_rules.txt"])

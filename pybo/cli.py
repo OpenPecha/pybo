@@ -231,7 +231,7 @@ def kakha(**kwargs):
 # generate rdr rules
 @cli.command()
 @click.argument("input", type=click.Path(exists=True))
-@click.option("-dp", type=str, help="Dialect pack name, default is bo_general")
+@click.option("-dp", type=str, help="Dialect pack name, default is general")
 @click.option("-k", "--keep", type=str)
 @click.option('--type', type=str, help="Type can be either cql which is default type or hfr(Human friendly rule)")
 def extract_rules(**kwargs):
@@ -265,13 +265,13 @@ def extract_rules(**kwargs):
 #convert cql to hfr
 @cli.command()
 @click.argument("input", type=click.Path(exists=True))
-@click.option("-dp", type=str, help="Dialect pack name, default is bo_general")
+@click.option("-dp", type=str, help="Dialect pack name, default is general")
 def convert_cql2hfr(**kwargs):
     cql_path = Path(kwargs['input'])
     dialect_pack_name = kwargs["dp"] if kwargs["dp"] else DEFAULT_DPACK
     hfr_dir = DIALECT_PACK_DIR / dialect_pack_name / "hfr_rules"
     hfr_dir.mkdir(exist_ok=True) 
-    hfr_file_path = hfr_dir / (cql_path.stem + "_hfr.tsv")
+    hfr_file_path = hfr_dir / (cql_path.stem + ".tsv")
     cql_rules = cql_path.read_text(encoding='utf-8')
     hfr = cqlr2hfr(cql_rules)
     hfr_file_path.write_text(hfr, encoding='utf-8')
@@ -279,13 +279,13 @@ def convert_cql2hfr(**kwargs):
 #convert hfr to cql
 @cli.command()
 @click.argument("input", type=click.Path(exists=True))
-@click.option("-dp", type=str, help="Dialect pack name, default is bo_general")
+@click.option("-dp", type=str, help="Dialect pack name, default is general")
 def convert_hfr2cql(**kwargs):
     hfr_path = Path(kwargs['input'])
     dialect_pack_name = kwargs["dp"] if kwargs["dp"] else DEFAULT_DPACK
     cql_dir = DIALECT_PACK_DIR / dialect_pack_name / "adjustments" / "rules"
     cql_dir.mkdir(exist_ok = True)
-    cql_file_path = cql_dir / (hfr_path.stem + "_cql.tsv")
+    cql_file_path = cql_dir / (hfr_path.stem + ".tsv")
     hfr = hfr_path.read_text(encoding='utf-8')
     cql = hfr2cqlr(hfr)
     cql_file_path.write_text(cql, encoding='utf-8')
