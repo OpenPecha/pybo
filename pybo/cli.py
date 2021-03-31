@@ -19,6 +19,7 @@ from pybo.rdr.rdr_2_replace_matcher import rdr_2_replace_matcher
 from pybo.utils.profile_report import profile_report as p_report
 from pybo.utils.regex_batch_apply import batch_apply_regex, get_regex_pairs
 from pybo.hfr_cqlr_converter import cqlr2hfr, hfr2cqlr
+from pybo.segmentation_rule.pipeline import extract_seg_rule
 
 HOME = Path.home()
 DIALECT_PACK_DIR = HOME / "Documents" / "pybo" / "dialect_packs"
@@ -259,6 +260,33 @@ def extract_rules(**kwargs):
         click.echo(f"[INFO] {file_or_dir} does not exist!")
 
     click.echo(log)
+    click.echo("[INFO] Completed !")
+    click.echo(f"[INFO] Added adjustments rules to {dialect_pack_name}")
+
+# generate rdr rules
+@cli.command()
+@click.argument("input", type=click.Path(exists=True))
+@click.option("-dp", type=str, help="Dialect pack name, default is general")
+@click.option('--type', type=str, help="Type can be either cql which is default type or hfr(Human friendly rule)")
+def extract_seg_rules(**kwargs):
+    rules = ''
+    input_path = Path(kwargs["input"])
+    dialect_pack_name = kwargs["dp"] if kwargs["dp"] else DEFAULT_DPACK
+    type = "cql" if kwargs["type"] is None else kwargs["type"]
+    if type == "cql":
+        out_dir = DIALECT_PACK_DIR / dialect_pack_name / "adjustments" / "rules"
+    else:
+        out_dir = DIALECT_PACK_DIR / dialect_pack_name / "hfr_rules"
+        out_dir.mkdir(exist_ok=True)
+
+    click.echo("[INFO] Extracing adjustments rules ...")
+    
+    if input_path.is_dir():
+        print('[ERROR] Invalid file name!!')
+    elif input_path.is_file():
+        rules += extract_seg_rule(input_path, dialect_pack_name, type)
+        (out_dir / f'{input_path.stem}_rules.tsv').write_text(rules, encoding='utf-8')
+        
     click.echo("[INFO] Completed !")
     click.echo(f"[INFO] Added adjustments rules to {dialect_pack_name}")
 
