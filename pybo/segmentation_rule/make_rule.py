@@ -46,7 +46,12 @@ def construct_token_of_rule(tokens_of_interest):
 
 def get_match_tokens(tokens, training_data):
     token_pat = get_token_pat(tokens)
-    token_in_training = re.search(token_pat, training_data)[0]
+    # todo: Selecting only one possibility.. need to find all possibilities and select the abiguious one
+    try:
+        token_in_training = re.search(token_pat, training_data)[0]
+    except:
+        print(f'{token_pat} pattern not found')
+        token_in_training = ''
     tokens_of_interest = [token for token in token_in_training.split(' ') if token]
     return tokens_of_interest
 

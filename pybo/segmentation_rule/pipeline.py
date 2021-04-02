@@ -118,23 +118,38 @@ def rdr_postprocess(file_path):
     for s in suffixes:
         Path(file_path.parent / (file_path.name + s)).unlink()
 
-def extract_seg_rule(input_path, dialect_pack_name=DEFAULT_DPACK type='cql'):
+def remove_duplicate_word(word_list):
+    return list(set(word_list))
+
+def add_word_2_adjustment(words_2_add, input_file_name, type='words'):
+    old_word_list = []
+    word_list_path = (DIALECT_PACK_DIR / DEFAULT_DPACK / "adjustments" / type / f'{input_file_name}.tsv')
+    if word_list_path.is_file():
+        old_word_list = [old_word for old_word in word_list_path.read_text(encoding='utf-8-sig').splitlines() if old_word]
+    new_word_list = old_word_list + words_2_add
+    new_word_list = remove_duplicate_word(new_word_list)
+    new_words = '\n'.join(new_word_list)
+    word_list_path.write_text(new_words, encoding='utf-8-sig')
+    print(f'[INFO]: New {type} added to adjustment {type} list..')
+
+def extract_seg_rule(input_path, dialect_pack_name=DEFAULT_DPACK, type='cql'):
     new_word_list = []
     new_remove_word_list = []
     input_file_name = input_path.stem
     training_data = get_training_data(input_path)
-    human_data = (input_path.parent / f'{input_file_name}_human_data.txt').read_text(encoding='utf-8-sig')
+    print('[INFO]: INITIAL SEGMENTATION COMPLETED..')
+    human_data = (input_path.parent / f'{input_file_name}_hd.txt').read_text(encoding='utf-8-sig')
     new_word_list, new_remove_word_list = filter_seg_errors(training_data, human_data)
+    print('[INFO]: FILTER SEGMENTATION ERROR COMPLETED..')
     if new_word_list:
-        with (DIALECT_PACK_DIR / dialect_pack_name / "adjustments" / "words" / f'{input_file_name}_new_word_list.tsv').open('a') as wf:
-            wf.write('\n'.join(new_word_list))
+        add_word_2_adjustment(new_word_list, input_file_name, type='words')
     if new_remove_word_list:
-        with (DIALECT_PACK_DIR / dialect_pack_name / "adjustments" / "remove" / f'{input_file_name}_new_remove_word_list.tsv').open('a') as rwf:
-            rwf.write('\n'.join(new_remove_word_list))
+        add_word_2_adjustment(new_remove_word_list, input_file_name, type='remove')
     training_data = get_training_data(input_path)
     training_data_path = (input_path.parent / f'{input_file_name}_tr_data.txt')
     training_data_path.write_text(training_data, encoding='utf-8')
     log = r(str(training_data_path), mode="train", verbose=True)
+    print('[INFO]: RDR TRAINING COMPLETED..')
     rdr_rules = Path(f"{training_data_path}.RDR").read_text(
         encoding="utf-8-sig"
     )
