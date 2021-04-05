@@ -1,4 +1,5 @@
 from pathlib import Path
+from re import T
 
 from bordr import rdr as r
 from botok.tokenizers.wordtokenizer import WordTokenizer
@@ -132,35 +133,55 @@ def add_word_2_adjustment(words_2_add, input_file_name, type='words'):
     word_list_path.write_text(new_words, encoding='utf-8-sig')
     print(f'[INFO]: New {type} added to adjustment {type} list..')
 
-def extract_seg_rule(input_path, dialect_pack_name=DEFAULT_DPACK, type='cql'):
-    new_word_list = []
-    new_remove_word_list = []
-    input_file_name = input_path.stem
-    training_data = get_training_data(input_path)
-    print('[INFO]: INITIAL SEGMENTATION COMPLETED..')
-    human_data = (input_path.parent / f'{input_file_name}_hd.txt').read_text(encoding='utf-8-sig')
-    new_word_list, new_remove_word_list = filter_seg_errors(training_data, human_data)
-    print('[INFO]: FILTER SEGMENTATION ERROR COMPLETED..')
-    if new_word_list:
-        add_word_2_adjustment(new_word_list, input_file_name, type='words')
-    if new_remove_word_list:
-        add_word_2_adjustment(new_remove_word_list, input_file_name, type='remove')
-    training_data = get_training_data(input_path)
-    training_data_path = (input_path.parent / f'{input_file_name}_tr_data.txt')
-    training_data_path.write_text(training_data, encoding='utf-8')
+def get_bilou_rules(training_data_path):
     log = r(str(training_data_path), mode="train", verbose=True)
     print('[INFO]: RDR TRAINING COMPLETED..')
     rdr_rules = Path(f"{training_data_path}.RDR").read_text(
         encoding="utf-8-sig"
     )
-    cql_rules = rdr_2_replace_matcher(rdr_rules).splitlines()
-    new_cql_rules = ''
-    training_init = (input_path.parent / f'{training_data_path.name}.INIT').read_text(encoding='utf-8-sig')
-    for cql_rule in cql_rules:
-        tokens_info, index, operator, conclusion = parse_rule(cql_rule)
+    bilou_rules = rdr_2_replace_matcher(rdr_rules).splitlines()
+    bilou_rules = list(set(bilou_rules))
+    return bilou_rules
+
+def convert_bilou_rules(bilou_rules, training_init):
+    new_cql_rules = []
+    for bilou_rule in bilou_rules:
+        tokens_info, index, operator, conclusion = parse_rule(bilou_rule)
         tokens = get_tokens(tokens_info)
         tokens_of_interest = get_match_tokens(tokens, training_init)
-        new_cql_rules += get_new_rule(tokens_of_interest, index, conclusion) + '\n'
+        new_cql_rules += get_new_rule(tokens_of_interest, int(index), conclusion)
+    new_cql_rules = list(set(new_cql_rules))
+    return new_cql_rules
+
+def extract_seg_rule(input_path, dialect_pack_name=DEFAULT_DPACK, type='cql', no_epochs = 3):
+    new_word_list = []
+    new_remove_word_list = []
+    input_file_name = input_path.stem
+    number_of_segmentation = 1
+    while True:
+        training_data = get_training_data(input_path)
+        print(f'[INFO]: SEGMENTATION PHASE {number_of_segmentation} COMPLETED..')
+        human_data = (input_path.parent / f'{input_file_name}_hd.txt').read_text(encoding='utf-8-sig')
+        new_word_list, new_remove_word_list = filter_seg_errors(training_data, human_data)
+        print('[INFO]: FILTER SEGMENTATION ERROR COMPLETED..')
+        if new_word_list:
+            add_word_2_adjustment(new_word_list, input_file_name, type='words')
+        if new_remove_word_list:
+            add_word_2_adjustment(new_remove_word_list, input_file_name, type='remove')
+        training_data = get_training_data(input_path)
+        word_list, remove_word_list = filter_seg_errors(training_data, human_data)
+        new_remove_word_list = [remove_word for remove_word in remove_word_list if remove_word not in new_remove_word_list]
+        new_word_list = [word for word in word_list if word not in new_word_list]
+        number_of_segmentation += 1
+        if (not new_word_list and not new_remove_word_list) or number_of_segmentation > no_epochs:
+            break
+    training_data_path = (input_path.parent / f'{input_file_name}_tr_data.txt')
+    training_data_path.write_text(training_data, encoding='utf-8')
+    bilou_rules = get_bilou_rules(training_data, training_data_path)
+    new_cql_rules = []
+    training_init = (input_path.parent / f'{training_data_path.name}.INIT').read_text(encoding='utf-8-sig')
+    new_cql_rules = convert_bilou_rules(bilou_rules, training_init)
+    new_cql_rules = "\n".join(new_cql_rules)
     rdr_postprocess(training_data_path)
     if type != 'cql':
         new_cql_rules = cqlr2hfr(new_cql_rules)
