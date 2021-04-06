@@ -12,6 +12,10 @@ def test_extract_rules():
     runner = CliRunner()
     runner.invoke(cli, ["extract-rules", "tests/resources/step2/step2"])
 
+def test_extract__seg_rules():
+    runner = CliRunner()
+    runner.invoke(cli, ["extract-seg-rules", "tests/corpus1/corpus1.txt", "--type", "hfr", "--e", 1])
+
 def test_convert_cql2hfr():
     runner = CliRunner()
     runner.invoke(cli, ["convert-cql2hfr", "tests/resources/step2/cql_rules.txt"])
