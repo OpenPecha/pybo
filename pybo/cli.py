@@ -268,11 +268,13 @@ def extract_rules(**kwargs):
 @click.argument("input", type=click.Path(exists=True))
 @click.option("-dp", type=str, help="Dialect pack name, default is general")
 @click.option('--type', type=str, help="Type can be either cql which is default type or hfr(Human friendly rule)")
+@click.option("--e", type=int)
 def extract_seg_rules(**kwargs):
     rules = ''
     input_path = Path(kwargs["input"])
     dialect_pack_name = kwargs["dp"] if kwargs["dp"] else DEFAULT_DPACK
     type = "cql" if kwargs["type"] is None else kwargs["type"]
+    epochs = 3 if kwargs['e'] is None else kwargs['e']
     if type == "cql":
         out_dir = DIALECT_PACK_DIR / dialect_pack_name / "adjustments" / "rules"
     else:
@@ -284,8 +286,11 @@ def extract_seg_rules(**kwargs):
     if input_path.is_dir():
         print('[ERROR] Invalid file name!!')
     elif input_path.is_file():
-        rules += extract_seg_rule(input_path, dialect_pack_name, type)
-        (out_dir / f'{input_path.stem}_rules.tsv').write_text(rules, encoding='utf-8')
+        rules += extract_seg_rule(input_path, dialect_pack_name, type, epochs)
+        if rules:
+            (out_dir / f'{input_path.stem}_rules.tsv').write_text(rules, encoding='utf-8')
+        else:
+            print('[INFO] No rules found')
         
     click.echo("[INFO] Completed !")
     click.echo(f"[INFO] Added adjustments rules to {dialect_pack_name}")

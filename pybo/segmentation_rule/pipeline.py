@@ -16,7 +16,7 @@ DEFAULT_DPACK = "general"
 
 
 def get_pybo_segmentation(sample_text):
-    wt = WordTokenizer(build_trie=True)
+    wt = WordTokenizer()
     tokens = wt.tokenize(sample_text)
     segmented_sample_text = ''
     for token in tokens:
@@ -60,11 +60,11 @@ def get_training_line(human_toks, pybo_toks):
                 break
     return training_line
 
-def get_training_data(input_path):
+def get_training_data(input_path, human_data):
     input_file_name = input_path.stem
     pybo_data = get_pybo_segmentation(input_path.read_text(encoding='utf-8-sig'))
     (input_path.parent / f'{input_file_name}_pybo_data.txt').write_text(pybo_data, encoding='utf-8')
-    human_lines = (input_path.parent / f'{input_file_name}_human_data.txt').read_text(encoding='utf-8-sig').splitlines()
+    human_lines = human_data.splitlines()
     pybo_lines = pybo_data.splitlines()
     training_data = ''
     for human_line, pybo_line in zip(human_lines, pybo_lines):
@@ -122,9 +122,9 @@ def rdr_postprocess(file_path):
 def remove_duplicate_word(word_list):
     return list(set(word_list))
 
-def add_word_2_adjustment(words_2_add, input_file_name, type='words'):
+def add_word_2_adjustment(words_2_add, input_file_name,dialect_pack_name, type='words'):
     old_word_list = []
-    word_list_path = (DIALECT_PACK_DIR / DEFAULT_DPACK / "adjustments" / type / f'{input_file_name}.tsv')
+    word_list_path = (DIALECT_PACK_DIR / dialect_pack_name / "adjustments" / type / f'{input_file_name}.tsv')
     if word_list_path.is_file():
         old_word_list = [old_word for old_word in word_list_path.read_text(encoding='utf-8-sig').splitlines() if old_word]
     new_word_list = old_word_list + words_2_add
@@ -143,13 +143,13 @@ def get_bilou_rules(training_data_path):
     bilou_rules = list(set(bilou_rules))
     return bilou_rules
 
-def convert_bilou_rules(bilou_rules, training_init):
+def convert_bilou_rules(bilou_rules, training_init, human_data):
     new_cql_rules = []
     for bilou_rule in bilou_rules:
         tokens_info, index, operator, conclusion = parse_rule(bilou_rule)
         tokens = get_tokens(tokens_info)
         tokens_of_interest = get_match_tokens(tokens, training_init)
-        new_cql_rules += get_new_rule(tokens_of_interest, int(index), conclusion)
+        new_cql_rules += get_new_rule(tokens_of_interest, int(index), conclusion, human_data)
     new_cql_rules = list(set(new_cql_rules))
     return new_cql_rules
 
@@ -158,17 +158,17 @@ def extract_seg_rule(input_path, dialect_pack_name=DEFAULT_DPACK, type='cql', no
     new_remove_word_list = []
     input_file_name = input_path.stem
     number_of_segmentation = 1
+    human_data = (input_path.parent / f'{input_file_name}_hd.txt').read_text(encoding='utf-8-sig')
     while True:
-        training_data = get_training_data(input_path)
+        training_data = get_training_data(input_path, human_data)
         print(f'[INFO]: SEGMENTATION PHASE {number_of_segmentation} COMPLETED..')
-        human_data = (input_path.parent / f'{input_file_name}_hd.txt').read_text(encoding='utf-8-sig')
         new_word_list, new_remove_word_list = filter_seg_errors(training_data, human_data)
         print('[INFO]: FILTER SEGMENTATION ERROR COMPLETED..')
         if new_word_list:
-            add_word_2_adjustment(new_word_list, input_file_name, type='words')
+            add_word_2_adjustment(new_word_list, input_file_name, dialect_pack_name, type='words')
         if new_remove_word_list:
-            add_word_2_adjustment(new_remove_word_list, input_file_name, type='remove')
-        training_data = get_training_data(input_path)
+            add_word_2_adjustment(new_remove_word_list, input_file_name, dialect_pack_name, type='remove')
+        training_data = get_training_data(input_path, human_data)
         word_list, remove_word_list = filter_seg_errors(training_data, human_data)
         new_remove_word_list = [remove_word for remove_word in remove_word_list if remove_word not in new_remove_word_list]
         new_word_list = [word for word in word_list if word not in new_word_list]
@@ -177,10 +177,10 @@ def extract_seg_rule(input_path, dialect_pack_name=DEFAULT_DPACK, type='cql', no
             break
     training_data_path = (input_path.parent / f'{input_file_name}_tr_data.txt')
     training_data_path.write_text(training_data, encoding='utf-8')
-    bilou_rules = get_bilou_rules(training_data, training_data_path)
+    bilou_rules = get_bilou_rules(training_data_path)
     new_cql_rules = []
     training_init = (input_path.parent / f'{training_data_path.name}.INIT').read_text(encoding='utf-8-sig')
-    new_cql_rules = convert_bilou_rules(bilou_rules, training_init)
+    new_cql_rules = convert_bilou_rules(bilou_rules, training_init, human_data)
     new_cql_rules = "\n".join(new_cql_rules)
     rdr_postprocess(training_data_path)
     if type != 'cql':

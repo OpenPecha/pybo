@@ -98,14 +98,13 @@ def is_invalid_merge(tokens_info, index_info, human_data):
 def filter_invalid_rules(new_rules, human_data):
     valid_rules = []
     for new_rule in new_rules:
-        if new_rule:
-            tokens_info, index_info, operator, conclusion = parse_rule(new_rule)
-            if ":" == operator:
-                if not is_invalid_split(tokens_info, index_info, human_data):
-                    valid_rules.append(new_rule)
-            elif "+" == operator:
-                if not is_invalid_merge(tokens_info, index_info, human_data):
-                    valid_rules.append(new_rule)
+        tokens_info, index_info, operator, conclusion = parse_rule(new_rule)
+        if ":" == operator:
+            if not is_invalid_split(tokens_info, index_info, human_data):
+                valid_rules.append(new_rule)
+        elif "+" == operator:
+            if not is_invalid_merge(tokens_info, index_info, human_data):
+                valid_rules.append(new_rule)
     return valid_rules
 
 def get_new_rule(tokens_of_interest, index, conclusion, human_data):
@@ -120,7 +119,8 @@ def get_new_rule(tokens_of_interest, index, conclusion, human_data):
             new_rule += f'{index}-1\t:\t[] []'
         else:
             new_rule = ''
-        new_rules.append(new_rule)
+        if new_rule:
+            new_rules.append(new_rule)
     unique_rules = list(set(new_rules))
     filtered_rules = filter_invalid_rules(unique_rules, human_data)
     return filtered_rules
