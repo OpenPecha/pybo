@@ -16,6 +16,9 @@ DEFAULT_DPACK = "general"
 
 
 def get_pybo_segmentation(sample_text):
+    """
+    Tokenize the sample text using botok token
+    """
     wt = WordTokenizer()
     tokens = wt.tokenize(sample_text)
     segmented_sample_text = ''
@@ -26,6 +29,10 @@ def get_pybo_segmentation(sample_text):
     segmented_sample_text = segmented_sample_text.replace('  ', ' ')
     return segmented_sample_text
 
+def post_process_human_data(human_data):
+    human_data = human_data.replace('།  །', '།།')
+    human_data = human_data.replace('  ', ' ')
+    return human_data
 
 def get_toks(seg_str):
     tokens = seg_str.split(' ')
@@ -33,7 +40,8 @@ def get_toks(seg_str):
 
 def get_training_line(human_toks, pybo_toks):
     training_line = ''
-    for human_tok in human_toks:
+    while True:
+        human_tok = human_toks[0]
         cur_tok = ''
         for tok_walker, pybo_tok in enumerate(pybo_toks):
             if pybo_tok == human_tok:
@@ -54,10 +62,14 @@ def get_training_line(human_toks, pybo_toks):
                 cur_tok = ''
                 training_line += f'{pybo_tok}/S '
                 del pybo_toks[tok_walker]
+                # human_toks = human_toks[1:]
                 break
             else:
                 pybo_toks = pybo_toks[tok_walker:]
                 break
+        human_toks = human_toks[1:]
+        if not human_toks:
+            break
     return training_line
 
 def get_training_data(input_path, human_data):
@@ -78,7 +90,7 @@ def get_split_suggestions(training_data):
     return list(set(split_suggestions))
 
 def get_merge_suggestions(training_data):
-    merge_suggestions = re.findall('(\S+/B (\S+/I)+)', training_data)
+    merge_suggestions = [merge_suggestion for merge_suggestion,_ in re.findall('(\S+/B (\S+/I )+)', training_data)]
     return list(set(merge_suggestions))
 
 def parse_merge_suggestion(merge_suggestion):
@@ -87,7 +99,9 @@ def parse_merge_suggestion(merge_suggestion):
 
 def get_counter_merge_suggestion(merge_suggestion_tokens):
     counter_merge_suggestion = ' '.join(merge_suggestion_tokens)
-    return counter_merge_suggestion + " "
+    if merge_suggestion_tokens[-1][-1] == '་':
+        counter_merge_suggestion += " "
+    return counter_merge_suggestion
     
 def get_remove_word_candidate(split_suggestions, human_data):
     remove_word_candidate = []
@@ -99,8 +113,8 @@ def get_remove_word_candidate(split_suggestions, human_data):
 def get_new_word_candidate(merge_suggestions, human_data):
     new_word_candidate = []
     for merge_suggestion in merge_suggestions:
-        merge_suggestion_tokens = parse_merge_suggestion(merge_suggestion[0])
-        counter_merge_suggestion = get_counter_merge_suggestion(merge_suggestion_tokens)
+        merge_suggestion_tokens = parse_merge_suggestion(merge_suggestion)
+        counter_merge_suggestion = " " + get_counter_merge_suggestion(merge_suggestion_tokens)
         if counter_merge_suggestion not in human_data:
             new_word_candidate.append(''.join(merge_suggestion_tokens))
     return new_word_candidate
@@ -159,6 +173,7 @@ def extract_seg_rule(input_path, dialect_pack_name=DEFAULT_DPACK, type='cql', no
     input_file_name = input_path.stem
     number_of_segmentation = 1
     human_data = (input_path.parent / f'{input_file_name}_hd.txt').read_text(encoding='utf-8-sig')
+    human_data = post_process_human_data(human_data)
     while True:
         training_data = get_training_data(input_path, human_data)
         print(f'[INFO]: SEGMENTATION PHASE {number_of_segmentation} COMPLETED..')

@@ -5,16 +5,16 @@ def parse_rule(rule):
     return part_of_rules[0], part_of_rules[1], part_of_rules[2], part_of_rules[3]
 
 def get_tokens(tokens_info):
-    tokens = re.findall('\[.*?\]', tokens_info)
+    tokens = re.findall(r'\[.*?\]', tokens_info)
     return tokens
 
 def parse_tok(tokens):
     try:
-        pos = re.search('pos="(\S)"', tokens).group(1)
+        pos = re.search(r'pos="(\S)"', tokens).group(1)
     except:
         pos = ''
     try:
-        text = re.search('text="(\S+)" ?', tokens).group(1)
+        text = re.search(r'text="(\S+)" ?', tokens).group(1)
     except:
         text = ''
     return pos, text
@@ -53,8 +53,7 @@ def get_match_tokens(tokens, training_data):
         tokens_of_interest.append([token for token in token_in_training.split(' ') if token])
     return tokens_of_interest
 
-def is_single_sly(token):
-    text = re.search('\"(\S+)\"', token).group(1)
+def is_single_sly(text):
     syls = [syl for syl in text.split('་') if syl]
     if len(syls) > 1:
         return False
@@ -69,14 +68,24 @@ def parse_index_info(index_info):
         index = int(index_info)
     return index
 
+def get_counter_split_suggestion(spilt_suggestion):
+    syls = [syl for syl in spilt_suggestion.split('་') if syl]
+    suggestion = f'{syls[0]}་ {"".join(syls[1:])}'
+    if spilt_suggestion[-1] == '་':
+        suggestion += '་'
+    counter_split_suggestion = f' {suggestion} '
+    return counter_split_suggestion
+
 def is_invalid_split(tokens_info, index_info, human_data):
     index = parse_index_info(index_info)
     tokens = get_tokens(tokens_info)
-    if is_single_sly(tokens[index-1]) or len(tokens) < index:
+    token_to_split = re.search(r'\"(\S+)\"', tokens[index-1]).group(1)
+    if is_single_sly(token_to_split) or len(tokens) < index:
         return True
     else:
-        split_suggestion = re.search('\"(\S+)\"', tokens[index-1]).group(1)
-        if split_suggestion not in human_data:
+        split_suggestion = " " + token_to_split + " "
+        counter_split_suggestion = get_counter_split_suggestion(split_suggestion)
+        if split_suggestion not in human_data and counter_split_suggestion not in human_data:
             return True
         else:
             return False
@@ -87,13 +96,14 @@ def is_invalid_merge(tokens_info, index_info, human_data):
     if len(tokens) <= index or index == 0:
         return True
     else:
-        part1 = re.search('\"(\S+)\"', tokens[index-1]).group(1)
-        part2 = re.search('\"(\S+)\"', tokens[index]).group(1)
+        part1 = re.search(r'\"(\S+)\"', tokens[index-1]).group(1)
+        part2 = re.search(r'\"(\S+)\"', tokens[index]).group(1)
         merge_suggestion = part1 + part2
-        if "།" in merge_suggestion or merge_suggestion not in human_data:
-            return True
-        else:
+        counter_merge_suggestion = f'{part1} {part2}'
+        if "།" not in merge_suggestion and (merge_suggestion in human_data and counter_merge_suggestion in human_data):
             return False
+        else:
+            return True
 
 def filter_invalid_rules(new_rules, human_data):
     valid_rules = []
