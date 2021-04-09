@@ -196,9 +196,11 @@ def get_remove_word_candidates(split_suggestions, human_data):
         list: remove word candidates
     """
     remove_word_candidate = []
-    for spilt_suggestion_token in split_suggestions:
-        if spilt_suggestion_token not in human_data:
-            remove_word_candidate.append(spilt_suggestion_token)
+    for split_suggestion_token in split_suggestions:
+        if not is_single_syl(split_suggestion_token):
+            split_suggestion = f' {split_suggestion_token} '
+            if split_suggestion not in human_data:
+                remove_word_candidate.append(split_suggestion_token)
     return remove_word_candidate
 
 def get_new_word_candidate(merge_suggestion, human_data):
