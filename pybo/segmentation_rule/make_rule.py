@@ -149,6 +149,33 @@ def get_counter_split_suggestion(spilt_suggestion):
     counter_split_suggestion = f' {suggestion} '
     return counter_split_suggestion
 
+def is_false_positive_split(tokens_in_rule, index, counter_split_suggestion, human_data):
+    """Check if the rule is a false positive split case or not
+
+    Args:
+        tokens_in_rule (list): tokens in rule
+        index (int): index of token on which split is going to take
+        counter_split_suggestion (str): co
+        human_data (str): human segmented data
+
+    Returns:
+        boolean: True if rule is false positive else false
+    """
+    split_suggestion_with_context = ''
+    counter_split_suggestion = counter_split_suggestion.strip()
+    for token_walker, token in enumerate(tokens_in_rule, 1):
+        token_text = re.search(r'\"(\S+)\"', token).group(1)
+        if token_walker == 1:
+            split_suggestion_with_context += f' {token_text} '
+        elif token_walker == index:
+            split_suggestion_with_context += f'{counter_split_suggestion} '
+        else:
+            split_suggestion_with_context += f'{token_text} '
+    if split_suggestion_with_context in human_data:
+        return False
+    else:
+        return True
+
 def is_invalid_split(tokens_info, index_info, human_data):
     """Return false if split suggestion is ambiguous segmentation else true 
 
@@ -168,10 +195,27 @@ def is_invalid_split(tokens_info, index_info, human_data):
     else:
         split_suggestion = f" {token_to_split} "
         counter_split_suggestion = get_counter_split_suggestion(split_suggestion)
-        if split_suggestion in human_data and counter_split_suggestion in human_data:
+        if split_suggestion in human_data and counter_split_suggestion in human_data and not is_false_positive_split(tokens, index, counter_split_suggestion, human_data):
             return False
         else:
             return True
+
+def is_false_positive_merge(tokens_in_rule, index, human_data):
+    merge_suggestion_with_context = ''
+    for token_walker, token in enumerate(tokens_in_rule, 1):
+        token_text = re.search(r'\"(\S+)\"', token).group(1)
+        if token_walker == 1:
+            merge_suggestion_with_context += f' {token_text} '
+        elif token_walker == index:
+            merge_suggestion_with_context += f'{token_text}'
+        elif token_walker == index+1:
+            merge_suggestion_with_context += f'{token_text} '
+        else:
+            merge_suggestion_with_context += f'{token_text} '
+    if merge_suggestion_with_context in human_data:
+        return False
+    else:
+        return True
 
 def is_invalid_merge(tokens_info, index_info, human_data):
     """Return false if merge suggestion is ambiguous segmentation else true 
@@ -193,7 +237,7 @@ def is_invalid_merge(tokens_info, index_info, human_data):
         part2 = re.search(r'\"(\S+)\"', tokens[index]).group(1)
         merge_suggestion = f' {part1}{part2} '
         counter_merge_suggestion = f' {part1} {part2} '
-        if "།" not in merge_suggestion and (merge_suggestion in human_data and counter_merge_suggestion in human_data):
+        if "།" not in merge_suggestion and (merge_suggestion in human_data and counter_merge_suggestion in human_data) and not is_false_positive_merge(tokens, index, human_data):
             return False
         else:
             return True

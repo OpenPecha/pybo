@@ -256,7 +256,7 @@ def filter_seg_errors(bilou_tag_data, human_data):
     return new_word_candidate, new_remove_word_candidate
 
 def rdr_postprocess(file_path):
-    suffixes = [".DICT", ".INIT", ".RAW", ".RDR", ".sDict"]
+    suffixes = [".DICT", ".INIT", ".RAW", ".sDict"]
     for s in suffixes:
         Path(file_path.parent / (file_path.name + s)).unlink()
 
