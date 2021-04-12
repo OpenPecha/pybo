@@ -35,7 +35,15 @@ def parse_tok(token):
         text = ''
     return bilou_tag, text
 
-def add_extra_token_pat(ambiguous_seg_pat, index_info):
+def add_extra_token_pat(ambiguous_seg_pat):
+    """extra context tokens added to ambiguous seg pat
+
+    Args:
+        ambiguous_seg_pat (str): ambiguous segmentation pattern
+
+    Returns:
+        str: ambiguous seg pat with extra context token
+    """
     extra_token_pat = r' \S+?/\S '
     ambiguous_seg_pat_with_extra_token_pat = f'{extra_token_pat}{ambiguous_seg_pat}{extra_token_pat}'
     ambiguous_seg_pat_with_extra_token_pat = ambiguous_seg_pat_with_extra_token_pat.replace('  ', ' ')
@@ -83,7 +91,10 @@ def construct_token_info(ambiguous_seg_candidate):
         token_parts = token.split('/')
         token_text = re.search(r'(\S+)<\S+',token_parts[0]).group(1)
         token_pos = re.search(r'<(\S+)>',token_parts[0]).group(1)
-        token_info += f'[text="{token_text}" & pos="{token_pos}"] '
+        if token_pos != 'NO_POS':
+            token_info += f'[text="{token_text}" & pos="{token_pos}"] '
+        else:
+            token_info += f'[text="{token_text}"] '
     return token_info.strip()
 
 def get_ambiguous_seg_candidates(tokens_in_rule, index_info, bilou_tag_data):
