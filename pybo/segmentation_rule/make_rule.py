@@ -74,7 +74,7 @@ def get_ambiguous_seg_pat(tokens_in_rule, index_info):
             else:
                 ambiguous_seg_pat += r'/\S'
     if len(tokens_in_rule) < 5:
-        ambiguous_seg_pat = add_extra_token_pat(ambiguous_seg_pat, index_info)
+        ambiguous_seg_pat = add_extra_token_pat(ambiguous_seg_pat)
     return ambiguous_seg_pat
 
 def construct_token_info(ambiguous_seg_candidate):
