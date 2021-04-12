@@ -28,9 +28,17 @@ def get_botok_segmentation(sample_text):
     tokens = wt.tokenize(sample_text)
     segmented_sample_text = ''
     for token in tokens:
-        token_with_tag = f'{token.text} '
+        token_text = token.text.replace(' ', '')
+        if token.pos:
+            token_pos = token.pos
+        else:
+            token_pos = token.chunk_type
+        token_with_tag = f'{token_text}<{token_pos}> '
+        if '\n' in token_with_tag:
+            token_with_tag = token_with_tag.replace('\n', '')
+            token_with_tag += '\n'
         segmented_sample_text += token_with_tag
-    segmented_sample_text = post_process_botok_segmented_data(segmented_sample_text)
+    segmented_sample_text = segmented_sample_text.replace(' \n', '\n')
     return segmented_sample_text
 
 def post_process_botok_segmented_data(segmented_text):
@@ -72,6 +80,19 @@ def get_toks(seg_str):
     tokens = seg_str.split(' ')
     return tokens
 
+def parse_tok(botok_tok):
+    """parse botok parts
+
+    Args:
+        botok_tok (str): botok tok
+
+    Returns:
+        str,str: text of token and pos of token
+    """
+    pos = re.search(r'<.+?>', botok_tok)[0]
+    text = botok_tok.replace(pos, '')
+    return text, pos
+
 def get_bilou_tag_line(human_toks, botok_toks):
     """Add bilou tags to botok tokens and join them as a string with space between each tokens
 
@@ -87,23 +108,24 @@ def get_bilou_tag_line(human_toks, botok_toks):
         human_tok = human_toks[0]
         cur_tok = ''
         for tok_walker, botok_tok in enumerate(botok_toks):
-            if botok_tok == human_tok:
-                bilou_tag_line += f'{botok_tok}/U '
+            botok_tok_text, botok_tok_pos = parse_tok(botok_tok)
+            if botok_tok_text == human_tok:
+                bilou_tag_line += f'{botok_tok_text}{botok_tok_pos}/U '
                 del botok_toks[tok_walker]
                 break
-            elif botok_tok in human_tok:
-                cur_tok += botok_tok
+            elif botok_tok_text in human_tok:
+                cur_tok += botok_tok_text
                 if cur_tok == human_tok:
-                    bilou_tag_line += f'{botok_tok}/I '
+                    bilou_tag_line += f'{botok_tok_text}{botok_tok_pos}/I '
                     botok_toks = botok_toks[tok_walker+1:]
                     break
                 elif tok_walker == 0:
-                    bilou_tag_line += f'{botok_tok}/B '
+                    bilou_tag_line += f'{botok_tok_text}{botok_tok_pos}/B '
                 else:
-                    bilou_tag_line += f'{botok_tok}/I '
-            elif human_tok in botok_tok:
+                    bilou_tag_line += f'{botok_tok_text}{botok_tok_pos}/I '
+            elif human_tok in botok_tok_text:
                 cur_tok = ''
-                bilou_tag_line += f'{botok_tok}/S '
+                bilou_tag_line += f'{botok_tok_text}{botok_tok_pos}/S '
                 del botok_toks[tok_walker]
                 break
             else:
@@ -168,7 +190,7 @@ def parse_merge_suggestion(merge_suggestion):
     Returns:
         list: tokens in merge suggestion
     """
-    merge_suggestion_tokens = [token[:-2] for token in merge_suggestion.split(' ') if token]
+    merge_suggestion_tokens = [re.search(r'(\S+)<\S+',token).group(1) for token in merge_suggestion.split(' ') if token]
     return merge_suggestion_tokens
 
 def get_counter_merge_suggestion(merge_suggestion_tokens):
@@ -197,10 +219,11 @@ def get_remove_word_candidates(split_suggestions, human_data):
     """
     remove_word_candidate = []
     for split_suggestion_token in split_suggestions:
-        if not is_single_syl(split_suggestion_token):
-            split_suggestion = f' {split_suggestion_token} '
+        split_suggestion_tok_text = re.search(r'(\S+)<\S+',split_suggestion_token).group(1)
+        if not is_single_syl(split_suggestion_tok_text):
+            split_suggestion = f' {split_suggestion_tok_text} '
             if split_suggestion not in human_data:
-                remove_word_candidate.append(split_suggestion_token)
+                remove_word_candidate.append(split_suggestion_tok_text)
     return remove_word_candidate
 
 def get_new_word_candidate(merge_suggestion, human_data):
@@ -214,6 +237,8 @@ def get_new_word_candidate(merge_suggestion, human_data):
         str: new word candidate
     """
     new_word = ''
+    # if 'ལ་བ/B ར་/I' in merge_suggestion:
+    #     print('check')
     merge_suggestion_tokens = parse_merge_suggestion(merge_suggestion)
     counter_merge_suggestion = " " + get_counter_merge_suggestion(merge_suggestion_tokens)
     if counter_merge_suggestion not in human_data:
