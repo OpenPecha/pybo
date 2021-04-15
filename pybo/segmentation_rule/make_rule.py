@@ -73,7 +73,7 @@ def get_ambiguous_seg_pat(tokens_in_rule, index_info):
                 ambiguous_seg_pat += f'/{bilou_tag}'
             else:
                 ambiguous_seg_pat += r'/\S'
-    if len(tokens_in_rule) < 5:
+    if len(tokens_in_rule) < 4:
         ambiguous_seg_pat = add_extra_token_pat(ambiguous_seg_pat)
     return ambiguous_seg_pat
 
@@ -155,9 +155,10 @@ def get_splited_token(spilt_suggestion):
     Returns:
         str: opposite of split suggestion
     """
+    spilt_suggestion = spilt_suggestion.strip()
     syls = [syl.strip() for syl in spilt_suggestion.split('་') if syl and syl != ' ']
     suggestion = f'{syls[0]}་ {"་".join(syls[1:])}'
-    if spilt_suggestion[-2] == '་':
+    if spilt_suggestion[-1] == '་':
         suggestion += '་'
     splited_token = f' {suggestion} '
     return splited_token

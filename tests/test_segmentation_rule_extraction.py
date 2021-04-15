@@ -19,10 +19,10 @@ def test_postprocessing_human_data(human_data):
 
 
 def test_construct_bilou_tag_line():
-    human_toks = ["སྒྲ་བསྒྱུར་", "མར་པ་", "ལོ་ཙྪ", "འི་", "རྣམ་པར་", "ཐར་པ་", "མཐོང་བ་", "དོན་ཡོད་", "བཞུགས་", "སོ", "།།", "ན་མོ་གུ་རུ་", "དེ་ཝ་ཌཱ་ཀི་ནི", "།"]
-    botok_toks = ["སྒྲ་<NO_POS>", "བསྒྱུར་<NO_POS>", "མར་པ་<NO_POS>", "ལོ་<NO_POS>", "ཙྪའི་<NO_POS>", "རྣམ་པ<NO_POS>", "ར་<NO_POS>", "ཐར་པ་<NO_POS>", "མཐོང་བ་<NO_POS>", "དོན་ཡོད་<NO_POS>", "བཞུགས་<NO_POS>", "སོ<NO_POS>", "།།<NO_POS>", "ན་མོ་<NO_POS>", "གུ་རུ་<NO_POS>", "དེ་ཝ་<NO_POS>", "ཌཱ་ཀི་<NO_POS>", "ནི<NO_POS>", "།<NO_POS>"]
-    expected_training_line = 'སྒྲ་<NO_POS>/B བསྒྱུར་<NO_POS>/I མར་པ་<NO_POS>/U ལོ་<NO_POS>/B ཙྪའི་<NO_POS>/S རྣམ་པ<NO_POS>/B ར་<NO_POS>/I ཐར་པ་<NO_POS>/U མཐོང་བ་<NO_POS>/U དོན་ཡོད་<NO_POS>/U བཞུགས་<NO_POS>/U སོ<NO_POS>/U །།<NO_POS>/U ན་མོ་<NO_POS>/B གུ་རུ་<NO_POS>/I དེ་ཝ་<NO_POS>/B ཌཱ་ཀི་<NO_POS>/I ནི<NO_POS>/I །<NO_POS>/U '
-    assert expected_training_line == get_bilou_tag_line(human_toks, botok_toks)
+    human_toks = ["སྒྲ་བསྒྱུར་", "མར་པ་", "ལོ་ཙྪ", "འི་", "རྣམ་པར་", "ཐར་པ་", "མཐོང་བ་", "དོན་ཡོད་", "བཞུགས་", "སོ", "།།", "ན་མོ་གུ་རུ་", "དེ་ཝ་ཌཱ་ཀི་ནི", "།", "རྣམས་", "ལས་", "དམ་ཆོས་", "ནོར་བུ་", "དགོས་འདོད་", "ཆར་འབབས་", "བླངས་", "ནས་", "ནི", "།།"]
+    botok_toks = ["སྒྲ་<NO_POS>", "བསྒྱུར་<NO_POS>", "མར་པ་<NO_POS>", "ལོ་<NO_POS>", "ཙྪའི་<NO_POS>", "རྣམ་པ<NO_POS>", "ར་<NO_POS>", "ཐར་པ་<NO_POS>", "མཐོང་བ་<NO_POS>", "དོན་<NO_POS>", "ཡོད་<NO_POS>", "བཞུགས་<NO_POS>", "སོ<NO_POS>", "།།<NO_POS>", "ན་མོ་<NO_POS>", "གུ་རུ་<NO_POS>", "དེ་ཝ་<NO_POS>", "ཌཱ་ཀི་<NO_POS>", "ནི<NO_POS>", "།<NO_POS>", "རྣམས་<DET>", "ལས་དམ་<NO_POS>", "ཆོས་ནོར་<NO_POS>", "བུ་<NOUN>", "དགོས་འདོད་<NOUN>", "ཆ<NOUN>", "ར་<PART>", "འབབས་<NON_WORD>", "བླངས་<VERB>", "ནས་<PART>", "ནི<PART>", "།།<PUNCT>"]
+    expected_bilou_line = 'སྒྲ་<NO_POS>/B བསྒྱུར་<NO_POS>/I མར་པ་<NO_POS>/U ལོ་<NO_POS>/B ཙྪའི་<NO_POS>/S རྣམ་པ<NO_POS>/B ར་<NO_POS>/I ཐར་པ་<NO_POS>/U མཐོང་བ་<NO_POS>/U དོན་<NO_POS>/B ཡོད་<NO_POS>/I བཞུགས་<NO_POS>/U སོ<NO_POS>/U །།<NO_POS>/U ན་མོ་<NO_POS>/B གུ་རུ་<NO_POS>/I དེ་ཝ་<NO_POS>/B ཌཱ་ཀི་<NO_POS>/I ནི<NO_POS>/I །<NO_POS>/U རྣམས་<DET>/U ལས་དམ་<NO_POS>/S ཆོས་ནོར་<NO_POS>/S བུ་<NOUN>/I དགོས་འདོད་<NOUN>/U ཆ<NOUN>/B ར་<PART>/I འབབས་<NON_WORD>/I བླངས་<VERB>/U ནས་<PART>/U ནི<PART>/U །།<PUNCT>/U '
+    assert expected_bilou_line == get_bilou_tag_line(human_toks, botok_toks)
 
 def test_get_new_word_candidate():
     merge_suggestions = ["སྒྲ་<NO_POS>/B བསྒྱུར་<NO_POS>/I", "དོན་<NO_POS>\B ཡོད་<NO_POS>\I"]
@@ -32,7 +32,7 @@ def test_get_new_word_candidate():
 
 def test_get_remove_word_candidate():
     split_suggestions = ["སྒྲ་བསྒྱུར་<NO_POS>", "དོན་ཡོད་<NO_POS>", "མཐོང་བ་<NO_POS>"]
-    human_data = "སྒྲ་ བསྒྱུར་ མར་པ་ ལོ་ཙྪ འི་ རྣམ་པར་ ཐར་པ་ མཐོང་ བ་ དོན་ཡོད་ བཞུགས་ སོ ། མཐོང་ བ་ དོན་ ཡོད་ བཞུགས་ སོ །"
+    human_data = " སྒྲ་ བསྒྱུར་ མར་པ་ ལོ་ཙྪ འི་ རྣམ་པར་ ཐར་པ་ མཐོང་ བ་ དོན་ཡོད་ བཞུགས་ སོ ། མཐོང་ བ་ དོན་ ཡོད་ བཞུགས་ སོ །"
     expected_remove_words = ["སྒྲ་བསྒྱུར་", "མཐོང་བ་"]
     assert expected_remove_words == get_remove_word_candidates(split_suggestions, human_data)
 
