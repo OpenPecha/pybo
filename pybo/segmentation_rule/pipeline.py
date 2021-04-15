@@ -68,6 +68,20 @@ def post_process_human_data(human_data):
     human_data = human_data.replace('  ', ' ')
     return human_data
 
+def get_syls(token):
+    syls = []
+    token_parts = re.split("(་)", token)
+    syl = ''
+    for walker, part in enumerate(token_parts):
+        if part:
+            if walker % 2 == 0:
+                syl += part
+            else:
+                syl += part
+                syls.append(syl)
+                syl = ""
+    return syls
+
 def get_toks(seg_str):
     """Extract list of tokens from segmented string
 
@@ -77,7 +91,7 @@ def get_toks(seg_str):
     Returns:
         list: list of tokens
     """
-    tokens = seg_str.split(' ')
+    tokens = [token for token in seg_str.split(' ') if token]
     return tokens
 
 def parse_tok(botok_tok):
@@ -89,7 +103,7 @@ def parse_tok(botok_tok):
     Returns:
         str,str: text of token and pos of token
     """
-    pos = re.search(r'<.+?>', botok_tok)[0]
+    pos = re.search(r'<.*?>', botok_tok)[0]
     text = botok_tok.replace(pos, '')
     return text, pos
 
@@ -107,8 +121,9 @@ def get_bilou_tag_line(human_toks, botok_toks):
     while True:
         human_tok = human_toks[0]
         cur_tok = ''
-        for tok_walker, botok_tok in enumerate(botok_toks):
-            botok_tok_text, botok_tok_pos = parse_tok(botok_tok)
+        tok_walker= 0
+        while True:
+            botok_tok_text, botok_tok_pos = parse_tok(botok_toks[tok_walker])
             if botok_tok_text == human_tok:
                 bilou_tag_line += f'{botok_tok_text}{botok_tok_pos}/U '
                 del botok_toks[tok_walker]
@@ -119,18 +134,20 @@ def get_bilou_tag_line(human_toks, botok_toks):
                     bilou_tag_line += f'{botok_tok_text}{botok_tok_pos}/I '
                     botok_toks = botok_toks[tok_walker+1:]
                     break
-                elif tok_walker == 0:
+                elif re.search(f'^{botok_tok_text}', human_tok):
                     bilou_tag_line += f'{botok_tok_text}{botok_tok_pos}/B '
                 else:
                     bilou_tag_line += f'{botok_tok_text}{botok_tok_pos}/I '
             elif human_tok in botok_tok_text:
                 cur_tok = ''
                 bilou_tag_line += f'{botok_tok_text}{botok_tok_pos}/S '
-                del botok_toks[tok_walker]
-                break
             else:
                 botok_toks = botok_toks[tok_walker:]
+                if tok_walker == 0:
+                    bilou_tag_line += f'{botok_tok_text}{botok_tok_pos}/S '
+                    del botok_toks[tok_walker]
                 break
+            tok_walker += 1
         human_toks = human_toks[1:]
         if not human_toks:
             break
@@ -206,7 +223,16 @@ def get_counter_merge_suggestion(merge_suggestion_tokens):
     if merge_suggestion_tokens[-1][-1] == '་':
         counter_merge_suggestion += " "
     return counter_merge_suggestion
-    
+
+def is_splited_token_in_human_data(split_tok_text, human_data):
+    spilt_suggestion = split_tok_text.strip()
+    syls = get_syls(spilt_suggestion)
+    for syl_walker, syl in enumerate(syls):
+        split_possible = f' {syl} {"".join(syls[syl_walker+1:])} '
+        if split_possible in human_data:
+            return True
+    return False
+
 def get_remove_word_candidates(split_suggestions, human_data):
     """Return remove word candidate or non ambiguous spilt options from spilt suggestions using human data
 
@@ -222,7 +248,7 @@ def get_remove_word_candidates(split_suggestions, human_data):
         split_suggestion_tok_text = re.search(r'(\S+)<\S+',split_suggestion_token).group(1)
         if not is_single_syl(split_suggestion_tok_text):
             split_suggestion = f' {split_suggestion_tok_text} '
-            if split_suggestion not in human_data:
+            if split_suggestion not in human_data: #and is_splited_token_in_human_data(split_suggestion_tok_text, human_data):
                 remove_word_candidate.append(split_suggestion_tok_text)
     return remove_word_candidate
 
@@ -348,7 +374,7 @@ def convert_bilou_rules(bilou_rules, bilou_tag_init, human_data):
         tokens_info, index_info, operator, conclusion = parse_rule(bilou_rule)
         tokens_in_rule = get_tokens(tokens_info)
         ambiguous_seg_candidates = get_ambiguous_seg_candidates(tokens_in_rule, index_info, bilou_tag_init)
-        new_cql_rules += get_new_rule(ambiguous_seg_candidates, int(index_info)+1, conclusion, human_data)
+        new_cql_rules += get_new_rule(ambiguous_seg_candidates, int(index_info)+1, conclusion, human_data) # index incremented as extra context token involve
     new_cql_rules = list(set(new_cql_rules))
     return new_cql_rules
 
