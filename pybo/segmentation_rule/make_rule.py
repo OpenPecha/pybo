@@ -1,5 +1,19 @@
 import re
 
+def get_syls(token):
+    syls = []
+    token_parts = re.split("(་)", token)
+    syl = ''
+    for walker, part in enumerate(token_parts):
+        if part:
+            if walker % 2 == 0:
+                syl += part
+            else:
+                syl += part
+                syls.append(syl)
+                syl = ""
+    return syls
+
 def parse_rule(rule):
     """Parse all the components of cql rule
 
@@ -33,6 +47,7 @@ def parse_tok(token):
         text = re.search(r'text="(\S+)" ?', token).group(1)
     except:
         text = ''
+    text = re.sub('\.', '\\\S', text)
     return bilou_tag, text
 
 def add_extra_token_pat(ambiguous_seg_pat):
@@ -146,6 +161,15 @@ def parse_index_info(index_info):
         index = int(index_info)
     return index
 
+def splited_token_in_human_data(split_tok_text, human_data):
+    spilt_suggestion = split_tok_text.strip()
+    syls = get_syls(spilt_suggestion)
+    for syl_walker, syl in enumerate(syls):
+        split_possible = f' {syl} {"".join(syls[syl_walker+1:])} '
+        if split_possible in human_data:
+            return split_possible, syl_walker+1
+    return '', 0
+
 def get_splited_token(spilt_suggestion):
     """Split split suggestion and return it
 
@@ -205,14 +229,14 @@ def is_invalid_split(tokens_info, index_info, human_data):
     tokens = get_tokens(tokens_info)
     token_to_split = re.search(r'text=\"(\S+)\"', tokens[index-1]).group(1)
     if is_single_syl(token_to_split) or len(tokens) < index:
-        return True
+        return True, 0
     else:
         split_suggestion = f" {token_to_split} "
-        splited_token = get_splited_token(split_suggestion)
-        if split_suggestion in human_data and splited_token in human_data and not is_false_positive_split(tokens, index, splited_token, human_data):
-            return False
+        splited_token, split_idx = splited_token_in_human_data(split_suggestion, human_data)
+        if split_suggestion in human_data and splited_token and not is_false_positive_split(tokens, index, splited_token, human_data):
+            return False, split_idx
         else:
-            return True
+            return True, 0
 
 def is_false_positive_merge(tokens_in_rule, index, human_data):
     """Check if rule is false positive merge or not
@@ -260,8 +284,8 @@ def is_invalid_merge(tokens_info, index_info, human_data):
         part1 = re.search(r'text=\"(\S+)\"', tokens[index-1]).group(1)
         part2 = re.search(r'text=\"(\S+)\"', tokens[index]).group(1)
         merge_suggestion = f' {part1}{part2} '
-        counter_merge_suggestion = f' {part1} {part2} '
-        if "།" not in merge_suggestion and (merge_suggestion in human_data and counter_merge_suggestion in human_data) and not is_false_positive_merge(tokens, index, human_data):
+        splited_token_in_hd, split_idx = splited_token_in_human_data(merge_suggestion, human_data)
+        if "།" not in merge_suggestion and (merge_suggestion in human_data and splited_token_in_hd) and not is_false_positive_merge(tokens, index, human_data):
             return False
         else:
             return True
@@ -280,7 +304,9 @@ def filter_valid_rules(new_rules, human_data):
     for new_rule in new_rules:
         tokens_info, index_info, operator, conclusion = parse_rule(new_rule)
         if ":" == operator:
-            if not is_invalid_split(tokens_info, index_info, human_data):
+            is_invalid_split_flag, split_idx = is_invalid_split(tokens_info, index_info, human_data)
+            if not is_invalid_split_flag:
+                new_rule = re.sub(r'-\d', f'-{split_idx}', new_rule)
                 valid_rules.append(new_rule)
         elif "+" == operator:
             if not is_invalid_merge(tokens_info, index_info, human_data):
