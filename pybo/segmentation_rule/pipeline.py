@@ -125,11 +125,12 @@ def get_bilou_tag_line(human_toks, botok_toks):
                 else:
                     bilou_tag_line += f'{botok_tok_text}{botok_tok_pos}/I '
             elif re.search(human_tok, botok_tok_text):
-                cur_tok = ''
+                cur_tok = human_tok
                 bilou_tag_line += f'{botok_tok_text}{botok_tok_pos}/S '
-                while re.search(human_tok, botok_tok_text):
+                while re.search(cur_tok, botok_tok_text):
                     human_toks = human_toks[1:]
                     human_tok = human_toks[0]
+                    cur_tok += human_tok
             else:
                 botok_toks = botok_toks[tok_walker:]
                 if tok_walker != 0:
