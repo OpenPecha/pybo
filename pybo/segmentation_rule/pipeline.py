@@ -1,5 +1,6 @@
+import re
+
 from pathlib import Path
-from re import T
 
 from bordr import rdr as r
 from botok.tokenizers.wordtokenizer import WordTokenizer
@@ -8,6 +9,7 @@ from pybo.rdr.rdr_2_replace_matcher import rdr_2_replace_matcher
 from pybo.hfr_cqlr_converter import cqlr2hfr
 
 from pybo.segmentation_rule.make_rule import *
+from pybo.untokenize import assemble, pre_processing
 
 
 HOME = Path.home()
@@ -143,22 +145,27 @@ def get_bilou_tag_line(human_toks, botok_toks):
             break
     return bilou_tag_line
 
-def get_bilou_tag_data(corpus_data, human_data):
-    """Corpus data get segmented by botok.
+def get_detokenized_line(tokenized_line):
+    tokens = pre_processing(tokenized_line)
+    detokenized_line = assemble(tokens)
+    return detokenized_line
+
+def get_bilou_tag_data(human_data):
+    """Human data get detokenized.
+    Detokenized text is tokenized by botok.
     Bilou tag is given to botok segmented data by comparing with human segmentation
 
     Args:
-        corpus_data (str): corpus data (unsegmented data)
         human_data (str): segmented corpus data by human
 
     Returns:
         str: botok segmented data with bilou tag
     """
-    botok_data = get_botok_segmentation(corpus_data)
     human_lines = human_data.splitlines()
-    botok_lines = botok_data.splitlines()
     bilou_tag_data = ''
-    for human_line, botok_line in zip(human_lines, botok_lines):
+    for human_line in human_lines:
+        detokenized_line = get_detokenized_line(human_line)
+        botok_line = get_botok_segmentation(detokenized_line)
         human_toks = get_toks(human_line)
         botok_toks = get_toks(botok_line)
         bilou_tag_data += get_bilou_tag_line(human_toks, botok_toks) + '\n'
@@ -375,13 +382,12 @@ def extract_seg_rule(corpus_file_path, dialect_pack_name=DEFAULT_DPACK, type='cq
     """
     new_word_list = []
     new_remove_word_list = []
-    corpus_file_name = corpus_file_path.stem
+    corpus_file_name = corpus_file_path.stem[:-2]
     number_of_segmentation = 1
-    human_data = (corpus_file_path.parent / f'{corpus_file_name}_hd.txt').read_text(encoding='utf-8-sig')
+    human_data = corpus_file_path.read_text(encoding='utf-8-sig')
     human_data = post_process_human_data(human_data)
-    corpus_data = corpus_file_path.read_text(encoding='utf-8-sig')
     while True:
-        bilou_tag_data = get_bilou_tag_data(corpus_data, human_data)
+        bilou_tag_data = get_bilou_tag_data(human_data)
         print(f'[INFO]: SEGMENTATION PHASE {number_of_segmentation} COMPLETED..')
         new_word_list, new_remove_word_list = filter_seg_errors(bilou_tag_data, human_data)
         print('[INFO]: FILTER SEGMENTATION ERROR COMPLETED..')
@@ -389,7 +395,7 @@ def extract_seg_rule(corpus_file_path, dialect_pack_name=DEFAULT_DPACK, type='cq
             new_word_list = add_word_2_adjustment(new_word_list, corpus_file_name, dialect_pack_name, type='words')
         if new_remove_word_list:
             new_remove_word_list = add_word_2_adjustment(new_remove_word_list, corpus_file_name, dialect_pack_name, type='remove')
-        bilou_tag_data = get_bilou_tag_data(corpus_data, human_data)
+        bilou_tag_data = get_bilou_tag_data(human_data)
         word_list, remove_word_list = filter_seg_errors(bilou_tag_data, human_data)
         new_remove_word_list = [remove_word for remove_word in remove_word_list if remove_word not in new_remove_word_list]
         new_word_list = [word for word in word_list if word not in new_word_list]
