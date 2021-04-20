@@ -1,0 +1,28 @@
+བདག་པ<VERB>/S ས་<PART>/I གཞན་གཅེས་<NO_POS>/U འགྲོ་<VERB>/B ཀུན་<DET>/I བརྩེ་བ<VERB>/U ས་<PART>/U སྐྱོང་<VERB>/U །<PUNCT>/U 
+བདག་<PRON>/U སོགས་<DET>/U འགྲོ་<VERB>/B ཀུན་<DET>/I སྨིན་<VERB>/U ཅིང་<NON_WORD>/U གྲོལ་བྱ<NO_POS>/U འི་<PART>/U ཕྱིར<OTHER>/U །<PUNCT>/U 
+དགེ་བ<VERB>/U ས་<PART>/U འགྲོ་<VERB>/B ཀུན་<DET>/I སངས་རྒྱས་<NOUN>/U ཐོབ་<VERB>/U ཕྱིར་<OTHER>/U བསྔོ<VERB>/U །<PUNCT>/U 
+བསོད་ནམས་<NOUN>/U དེ<DET>/U ས<PART>/U །།<PUNCT>/S འགྲོ་<VERB>/B ཀུན་<DET>/I བཤེས་གཉེན་<NOUN>/U བསྟེན་པ<VERB>/U ར་<PART>/U ཤོག<VERB>/U །<PUNCT>/U 
+བཅས་<VERB>/U ཏེ་<NO_POS>/U གནང་ཚུལ<NO_POS>/U །<PUNCT>/U འགྲོ་<VERB>/U ཀུན་<DET>/U དང་བ་<NOUN>/U འདྲེན་<NO_POS>/U ཕྱིར་<OTHER>/U བཀོད་པ་<VERB>/U 
+མི་<PART>/U འདུག་པ<VERB>/U ས<PART>/U །།<PUNCT>/U འགྲོ་<VERB>/U ཀུན་<DET>/U བརྩེ་བ<VERB>/U ས་<PART>/U སྐྱོངས་<VERB>/U ཤིག་<NO_POS>/U 
+ཆུ་<NOUN>/U དེ<DET>/U ས་<PART>/U འགྲོ་<VERB>/B ཀུན་<DET>/I ཚིམ་པ་<VERB>/U རྨི<NO_POS>/U །<PUNCT>/U 
+ཆུ་<NOUN>/U དེ<DET>/U ས་<PART>/U འགྲོ་<VERB>/U ཀུན་<DET>/U ཚིམ་པ་<VERB>/U དེ<DET>/U །<PUNCT>/U 
+ལགས་སོ<NO_POS>/S །།།།<PUNCT>/S གསུམ་པ<NUM>/U །<PUNCT>/U འགྲོ་<VERB>/B ཀུན་<DET>/I དང་བ་<NOUN>/U འདྲེན་<NO_POS>/U ཕྱིར་<OTHER>/U བཀོད་པ་<VERB>/U 
+བདག་པ<VERB>/S ས་<PART>/I གཞན་གཅེས་<NO_POS>/U འགྲོ་<VERB>/B ཀུན་<DET>/I བརྩེ་བ<VERB>/U ས་<PART>/U སྐྱོང་<VERB>/U །<PUNCT>/U 
+བདག་<PRON>/U སོགས་<DET>/U འགྲོ་<VERB>/B ཀུན་<DET>/I སྨིན་<VERB>/U ཅིང་<NON_WORD>/U གྲོལ་བྱ<NO_POS>/U འི་<PART>/U ཕྱིར<OTHER>/U །<PUNCT>/U 
+དགེ་བ<VERB>/U ས་<PART>/U འགྲོ་<VERB>/B ཀུན་<DET>/I སངས་རྒྱས་<NOUN>/U ཐོབ་<VERB>/U ཕྱིར་<OTHER>/U བསྔོ<VERB>/U །<PUNCT>/U 
+བསོད་ནམས་<NOUN>/U དེ<DET>/U ས<PART>/U །།<PUNCT>/S འགྲོ་<VERB>/B ཀུན་<DET>/I བཤེས་གཉེན་<NOUN>/U བསྟེན་པ<VERB>/U ར་<PART>/U ཤོག<VERB>/U །<PUNCT>/U 
+བཅས་<VERB>/U ཏེ་<NO_POS>/U གནང་ཚུལ<NO_POS>/U །<PUNCT>/U འགྲོ་<VERB>/U ཀུན་<DET>/U དང་བ་<NOUN>/U འདྲེན་<NO_POS>/U ཕྱིར་<OTHER>/U བཀོད་པ་<VERB>/U 
+མི་<PART>/U འདུག་པ<VERB>/U ས<PART>/U །།<PUNCT>/U འགྲོ་<VERB>/U ཀུན་<DET>/U བརྩེ་བ<VERB>/U ས་<PART>/U སྐྱོངས་<VERB>/U ཤིག་<NO_POS>/U 
+ཆུ་<NOUN>/U དེ<DET>/U ས་<PART>/U འགྲོ་<VERB>/B ཀུན་<DET>/I ཚིམ་པ་<VERB>/U རྨི<NO_POS>/U །<PUNCT>/U 
+ཆུ་<NOUN>/U དེ<DET>/U ས་<PART>/U འགྲོ་<VERB>/U ཀུན་<DET>/U ཚིམ་པ་<VERB>/U དེ<DET>/U །<PUNCT>/U 
+ལགས་སོ<NO_POS>/S །།།།<PUNCT>/S གསུམ་པ<NUM>/U །<PUNCT>/U འགྲོ་<VERB>/B ཀུན་<DET>/I དང་བ་<NOUN>/U འདྲེན་<NO_POS>/U ཕྱིར་<OTHER>/U བཀོད་པ་<VERB>/U 
+བཅས་<VERB>/U ཏེ་<NO_POS>/U གནང་ཚུལ<NO_POS>/U །<PUNCT>/U འགྲོ་<VERB>/U ཀུན་<DET>/U དང་བ་<NOUN>/U འདྲེན་<NO_POS>/U ཕྱིར་<OTHER>/U བཀོད་པ་<VERB>/U 
+བདག་པ<VERB>/S ས་<PART>/I གཞན་གཅེས་<NO_POS>/U འགྲོ་<VERB>/B ཀུན་<DET>/I བརྩེ་བ<VERB>/U ས་<PART>/U སྐྱོང་<VERB>/U །<PUNCT>/U 
+བདག་<PRON>/U སོགས་<DET>/U འགྲོ་<VERB>/B ཀུན་<DET>/I སྨིན་<VERB>/U ཅིང་<NON_WORD>/U གྲོལ་བྱ<NO_POS>/U འི་<PART>/U ཕྱིར<OTHER>/U །<PUNCT>/U 
+དགེ་བ<VERB>/U ས་<PART>/U འགྲོ་<VERB>/B ཀུན་<DET>/I སངས་རྒྱས་<NOUN>/U ཐོབ་<VERB>/U ཕྱིར་<OTHER>/U བསྔོ<VERB>/U །<PUNCT>/U 
+བསོད་ནམས་<NOUN>/U དེ<DET>/U ས<PART>/U །།<PUNCT>/S འགྲོ་<VERB>/B ཀུན་<DET>/I བཤེས་གཉེན་<NOUN>/U བསྟེན་པ<VERB>/U ར་<PART>/U ཤོག<VERB>/U །<PUNCT>/U 
+བཅས་<VERB>/U ཏེ་<NO_POS>/U གནང་ཚུལ<NO_POS>/U །<PUNCT>/U འགྲོ་<VERB>/U ཀུན་<DET>/U དང་བ་<NOUN>/U འདྲེན་<NO_POS>/U ཕྱིར་<OTHER>/U བཀོད་པ་<VERB>/U 
+མི་<PART>/U འདུག་པ<VERB>/U ས<PART>/U །།<PUNCT>/U འགྲོ་<VERB>/U ཀུན་<DET>/U བརྩེ་བ<VERB>/U ས་<PART>/U སྐྱོངས་<VERB>/U ཤིག་<NO_POS>/U 
+ཆུ་<NOUN>/U དེ<DET>/U ས་<PART>/U འགྲོ་<VERB>/B ཀུན་<DET>/I ཚིམ་པ་<VERB>/U རྨི<NO_POS>/U །<PUNCT>/U 
+ཆུ་<NOUN>/U དེ<DET>/U ས་<PART>/U འགྲོ་<VERB>/U ཀུན་<DET>/U ཚིམ་པ་<VERB>/U དེ<DET>/U །<PUNCT>/U 
+ལགས་སོ<NO_POS>/S །།།།<PUNCT>/S གསུམ་པ<NUM>/U །<PUNCT>/U འགྲོ་<VERB>/B ཀུན་<DET>/I དང་བ་<NOUN>/U འདྲེན་<NO_POS>/U ཕྱིར་<OTHER>/U བཀོད་པ་<VERB>/U 

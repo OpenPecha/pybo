@@ -1,0 +1,4 @@
+[text="གཞན་གཅེས་"] [text="འགྲོ་" & pos="VERB"] [text="ཀུན་" & pos="DET"]	2	+	[]
+[text="།" & pos="PUNCT"] [text="འགྲོ་" & pos="VERB"] [text="ཀུན་" & pos="DET"]	2	+	[]
+[text="ས་" & pos="PART"] [text="འགྲོ་" & pos="VERB"] [text="ཀུན་" & pos="DET"]	2	+	[]
+[text="སོགས་" & pos="DET"] [text="འགྲོ་" & pos="VERB"] [text="ཀུན་" & pos="DET"]	2	+	[]

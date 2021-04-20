@@ -89,6 +89,7 @@ def test_valid_merge_rule():
 
 if __name__ == "__main__":
     # input_path = Path('./tests/corpus1/corpus1.txt')
-    input_path = Path('./tests/marpa/marpa.txt')
+    # input_path = Path('./tests/marpa/marpa.txt')
+    input_path = Path('./tests/drokun_test/drokun_test.txt')
     rules = extract_seg_rule(input_path, type='cql')
     (input_path.parent / f'{input_path.stem}_rules.txt').write_text(rules, encoding='utf-8')
