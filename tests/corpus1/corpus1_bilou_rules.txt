@@ -1,4 +1,0 @@
-[pos="U" & text="གཅིག་<NUM>"] [text="རེད་<VERB>"] [text="གོ་བ་<VERB>"]	1	=	[pos="I"]
-[pos="U" & text="དོན་<NOUN>"] [text="གཅིག་<NUM>"] [text="རེད་<VERB>"]	1	=	[pos="B"]
-[pos="U"] [text="བྱེད་པ<VERB>"]	1	=	[pos="B"]
-[text="ནང་པ་<NOUN>"] [pos="U"] [text="དང་<NO_POS>"]	2	=	[pos="S"]
