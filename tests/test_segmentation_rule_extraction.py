@@ -92,4 +92,4 @@ if __name__ == "__main__":
     # input_path = Path('./tests/marpa/marpa.txt')
     input_path = Path('./tests/data/drokun_test/drokun_test_hd.txt')
     rules = extract_seg_rule(input_path, type='cql')
-    (input_path.parent / f'{input_path.stem}_rules.txt').write_text(rules, encoding='utf-8')
+    (input_path.parent / f'{input_path.stem[:-2]}_rules.txt').write_text(rules, encoding='utf-8')
