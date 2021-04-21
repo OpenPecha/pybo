@@ -57,18 +57,18 @@ def post_process_botok_segmented_data(segmented_text):
     return clean_segmented_text
 
 
-def post_process_human_data(human_data):
+def post_process_human_seg_data(human_seg_data):
     """Remove unwanted space and solves double shad(ཉིས་ཤད་) split cases
 
     Args:
-        human_data (str): human segmented data
+        human_seg_data (str): human segmented data
 
     Returns:
         str: clean human segmented data
     """
-    human_data = human_data.replace('།  །', '།།')
-    human_data = human_data.replace('  ', ' ')
-    return human_data
+    human_seg_data = human_seg_data.replace('།  །', '།།')
+    human_seg_data = human_seg_data.replace('  ', ' ')
+    return human_seg_data
 
 def get_toks(seg_str):
     """Extract list of tokens from segmented string
@@ -150,24 +150,32 @@ def get_detokenized_line(tokenized_line):
     detokenized_line = assemble(tokens)
     return detokenized_line
 
-def get_bilou_tag_data(human_data):
+def get_detokenized_text(human_seg_lines):
+    detokenized_text = ''
+    for human_seg_line in human_seg_lines:
+        detokenized_text += get_detokenized_line(human_seg_line) + '\n'
+    return detokenized_text
+
+
+def get_bilou_tag_data(human_seg_data):
     """Human data get detokenized.
     Detokenized text is tokenized by botok.
     Bilou tag is given to botok segmented data by comparing with human segmentation
 
     Args:
-        human_data (str): segmented corpus data by human
+        human_seg_data (str): segmented corpus data by human
 
     Returns:
         str: botok segmented data with bilou tag
     """
-    human_lines = human_data.splitlines()
+    human_seg_lines = human_seg_data.splitlines()
+    detokenized_text = get_detokenized_text(human_seg_lines)
+    botok_seg_data = get_botok_segmentation(detokenized_text)
+    botok_seg_lines = botok_seg_data.splitlines()
     bilou_tag_data = ''
-    for human_line in human_lines:
-        detokenized_line = get_detokenized_line(human_line)
-        botok_line = get_botok_segmentation(detokenized_line)
-        human_toks = get_toks(human_line)
-        botok_toks = get_toks(botok_line)
+    for human_seg_line, botok_seg_line in zip(human_seg_lines, botok_seg_lines):
+        human_toks = get_toks(human_seg_line)
+        botok_toks = get_toks(botok_seg_line)
         bilou_tag_data += get_bilou_tag_line(human_toks, botok_toks) + '\n'
     return bilou_tag_data
 
@@ -221,12 +229,12 @@ def get_counter_merge_suggestion(merge_suggestion_tokens):
         counter_merge_suggestion += " "
     return counter_merge_suggestion
 
-def get_remove_word_candidates(split_suggestions, human_data):
+def get_remove_word_candidates(split_suggestions, human_seg_data):
     """Return remove word candidate or non ambiguous spilt options from spilt suggestions using human data
 
     Args:
         split_suggestions (list): spilt suggestion extracted from bilou tagged text
-        human_data (str): human segmented text
+        human_seg_data (str): human segmented text
 
     Returns:
         list: remove word candidates
@@ -236,17 +244,17 @@ def get_remove_word_candidates(split_suggestions, human_data):
         split_suggestion_tok_text = re.search(r'(\S+)<\S+',split_suggestion_token).group(1)
         if not is_single_syl(split_suggestion_tok_text):
             split_suggestion = f' {split_suggestion_tok_text} '
-            splited_token, split_idx = splited_token_in_human_data(split_suggestion_tok_text, human_data)
-            if split_suggestion not in human_data and splited_token:
+            splited_token, split_idx = splited_token_in_human_seg_data(split_suggestion_tok_text, human_seg_data)
+            if split_suggestion not in human_seg_data and splited_token:
                 remove_word_candidate.append(split_suggestion_tok_text)
     return remove_word_candidate
 
-def get_new_word_candidate(merge_suggestion, human_data):
+def get_new_word_candidate(merge_suggestion, human_seg_data):
     """Return new word if merge suggestion is not ambiguous one else empty string return
 
     Args:
         merge_suggestion (str): merge sugeestion
-        human_data (str): human segmented data
+        human_seg_data (str): human segmented data
 
     Returns:
         str: new word candidate
@@ -255,35 +263,35 @@ def get_new_word_candidate(merge_suggestion, human_data):
     merge_suggestion_tokens = parse_merge_suggestion(merge_suggestion)
     new_word =  ''.join(merge_suggestion_tokens)
     # counter_merge_suggestion = " " + get_counter_merge_suggestion(merge_suggestion_tokens)
-    splited_token, split_idx = splited_token_in_human_data(new_word, human_data)
+    splited_token, split_idx = splited_token_in_human_seg_data(new_word, human_seg_data)
     if not splited_token:
         return new_word
     else:
         return ''
 
-def get_new_word_candidates(merge_suggestions, human_data):
+def get_new_word_candidates(merge_suggestions, human_seg_data):
     """Return all the new word candidate from merge suggestions using human data
 
     Args:
         merge_suggestions (list): merge suggestions extracted from bilou tagged text
-        human_data (str): human segmented data
+        human_seg_data (str): human segmented data
 
     Returns:
         list: new word candidate
     """
     new_word_candidate = []
     for merge_suggestion in merge_suggestions:
-        new_word = get_new_word_candidate(merge_suggestion, human_data)
+        new_word = get_new_word_candidate(merge_suggestion, human_seg_data)
         if new_word:
             new_word_candidate.append(new_word)     
     return new_word_candidate
 
-def filter_seg_errors(bilou_tag_data, human_data):
+def filter_seg_errors(bilou_tag_data, human_seg_data):
     """Filters out obivious segmentation error and extract new words and new remove words
 
     Args:
         bilou_tag_data (str): segmented botok data with bilou tag
-        human_data (ste): segmented human data
+        human_seg_data (ste): segmented human data
 
     Returns:
         list: new word list and new remove word list
@@ -292,8 +300,8 @@ def filter_seg_errors(bilou_tag_data, human_data):
     new_remove_word_candidate = []
     split_suggestions = get_split_suggestions(bilou_tag_data)
     merge_suggestions = get_merge_suggestions(bilou_tag_data)
-    new_word_candidate = get_new_word_candidates(merge_suggestions, human_data)  
-    new_remove_word_candidate = get_remove_word_candidates(split_suggestions, human_data)
+    new_word_candidate = get_new_word_candidates(merge_suggestions, human_seg_data)  
+    new_remove_word_candidate = get_remove_word_candidates(split_suggestions, human_seg_data)
     return new_word_candidate, new_remove_word_candidate
 
 def rdr_postprocess(file_path):
@@ -348,13 +356,13 @@ def get_bilou_rules(bilou_tag_data_path):
     bilou_rules = list(set(bilou_rules))
     return bilou_rules
 
-def convert_bilou_rules(bilou_rules, bilou_tag_init, human_data):
+def convert_bilou_rules(bilou_rules, bilou_tag_init, human_seg_data):
     """Convert bilou rules to normal cql rules as rules with bilou tag are not usable by botok
 
     Args:
         bilou_rules (list): cql rules with bilou tag
         bilou_tag_init (str): bilou tagged initial text
-        human_data (str): human segmented data
+        human_seg_data (str): human segmented data
 
     Returns:
         list: usable cql rule by botok
@@ -364,7 +372,7 @@ def convert_bilou_rules(bilou_rules, bilou_tag_init, human_data):
         tokens_info, index_info, operator, conclusion = parse_rule(bilou_rule)
         tokens_in_rule = get_tokens(tokens_info)
         ambiguous_seg_candidates = get_ambiguous_seg_candidates(tokens_in_rule, index_info, bilou_tag_init)
-        new_cql_rules += get_new_rule(ambiguous_seg_candidates, int(index_info)+1, conclusion, human_data) # index incremented as extra context token involve
+        new_cql_rules += get_new_rule(ambiguous_seg_candidates, int(index_info)+1, conclusion, human_seg_data) # index incremented as extra context token involve
     new_cql_rules = list(set(new_cql_rules))
     return new_cql_rules
 
@@ -384,19 +392,19 @@ def extract_seg_rule(corpus_file_path, dialect_pack_name=DEFAULT_DPACK, type='cq
     new_remove_word_list = []
     corpus_file_name = corpus_file_path.stem[:-2]
     number_of_segmentation = 1
-    human_data = corpus_file_path.read_text(encoding='utf-8-sig')
-    human_data = post_process_human_data(human_data)
+    human_seg_data = corpus_file_path.read_text(encoding='utf-8-sig')
+    human_seg_data = post_process_human_seg_data(human_seg_data)
     while True:
-        bilou_tag_data = get_bilou_tag_data(human_data)
+        bilou_tag_data = get_bilou_tag_data(human_seg_data)
         print(f'[INFO]: SEGMENTATION PHASE {number_of_segmentation} COMPLETED..')
-        new_word_list, new_remove_word_list = filter_seg_errors(bilou_tag_data, human_data)
+        new_word_list, new_remove_word_list = filter_seg_errors(bilou_tag_data, human_seg_data)
         print('[INFO]: FILTER SEGMENTATION ERROR COMPLETED..')
         if new_word_list:
             new_word_list = add_word_2_adjustment(new_word_list, corpus_file_name, dialect_pack_name, type='words')
         if new_remove_word_list:
             new_remove_word_list = add_word_2_adjustment(new_remove_word_list, corpus_file_name, dialect_pack_name, type='remove')
-        bilou_tag_data = get_bilou_tag_data(human_data)
-        word_list, remove_word_list = filter_seg_errors(bilou_tag_data, human_data)
+        bilou_tag_data = get_bilou_tag_data(human_seg_data)
+        word_list, remove_word_list = filter_seg_errors(bilou_tag_data, human_seg_data)
         new_remove_word_list = [remove_word for remove_word in remove_word_list if remove_word not in new_remove_word_list]
         new_word_list = [word for word in word_list if word not in new_word_list]
         number_of_segmentation += 1
@@ -408,9 +416,9 @@ def extract_seg_rule(corpus_file_path, dialect_pack_name=DEFAULT_DPACK, type='cq
     (corpus_file_path.parent / f'{corpus_file_name}_bilou_rules.txt').write_text("\n".join(bilou_rules), encoding='utf-8')
     new_cql_rules = []
     bilou_tag_init = (corpus_file_path.parent / f'{bilou_tag_data_path.name}.INIT').read_text(encoding='utf-8-sig')
-    new_cql_rules = convert_bilou_rules(bilou_rules, bilou_tag_init, human_data)
+    new_cql_rules = convert_bilou_rules(bilou_rules, bilou_tag_init, human_seg_data)
     new_cql_rules = "\n".join(new_cql_rules)
-    rdr_postprocess(bilou_tag_data_path)
+    # rdr_postprocess(bilou_tag_data_path)
     if type != 'cql':
         new_cql_rules = cqlr2hfr(new_cql_rules)
     return new_cql_rules

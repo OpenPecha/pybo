@@ -161,12 +161,12 @@ def parse_index_info(index_info):
         index = int(index_info)
     return index
 
-def splited_token_in_human_data(split_tok_text, human_data):
+def splited_token_in_human_seg_data(split_tok_text, human_seg_data):
     spilt_suggestion = split_tok_text.strip()
     syls = get_syls(spilt_suggestion)
     for syl_walker, syl in enumerate(syls):
         split_possible = f' {syl} {"".join(syls[syl_walker+1:])} '
-        if split_possible in human_data:
+        if split_possible in human_seg_data:
             return split_possible, syl_walker+1
     return '', 0
 
@@ -187,14 +187,14 @@ def get_splited_token(spilt_suggestion):
     splited_token = f' {suggestion} '
     return splited_token
 
-def is_false_positive_split(tokens_in_rule, index, splited_token, human_data):
+def is_false_positive_split(tokens_in_rule, index, splited_token, human_seg_data):
     """Check if the rule is a false positive split case or not
 
     Args:
         tokens_in_rule (list): tokens in rule
         index (int): index of token on which split is going to take
         splited_token (str): splited token
-        human_data (str): human segmented data
+        human_seg_data (str): human segmented data
 
     Returns:
         boolean: True if rule is false positive else false
@@ -209,18 +209,18 @@ def is_false_positive_split(tokens_in_rule, index, splited_token, human_data):
             split_suggestion_with_context += f'{splited_token} '
         else:
             split_suggestion_with_context += f'{token_text} '
-    if split_suggestion_with_context in human_data:
+    if split_suggestion_with_context in human_seg_data:
         return False
     else:
         return True
 
-def is_invalid_split(tokens_info, index_info, human_data):
+def is_invalid_split(tokens_info, index_info, human_seg_data):
     """Return false if split suggestion is ambiguous segmentation else true 
 
     Args:
         tokens_info (str): token info of a rule
         index_info (str): index info of a cql rule
-        human_data (str): human segmented data
+        human_seg_data (str): human segmented data
 
     Returns:
         boolean: True if invalid split rule else False
@@ -232,19 +232,19 @@ def is_invalid_split(tokens_info, index_info, human_data):
         return True, 0
     else:
         split_suggestion = f" {token_to_split} "
-        splited_token, split_idx = splited_token_in_human_data(split_suggestion, human_data)
-        if split_suggestion in human_data and splited_token and not is_false_positive_split(tokens, index, splited_token, human_data):
+        splited_token, split_idx = splited_token_in_human_seg_data(split_suggestion, human_seg_data)
+        if split_suggestion in human_seg_data and splited_token and not is_false_positive_split(tokens, index, splited_token, human_seg_data):
             return False, split_idx
         else:
             return True, 0
 
-def is_false_positive_merge(tokens_in_rule, index, human_data):
+def is_false_positive_merge(tokens_in_rule, index, human_seg_data):
     """Check if rule is false positive merge or not
 
     Args:
         tokens_in_rule (list): tokens in rule
         index (int): index of token on which merge operation is going to perform
-        human_data (str): human segmented data
+        human_seg_data (str): human segmented data
 
     Returns:
         boolean: true if rule is false positive merge else false
@@ -260,18 +260,18 @@ def is_false_positive_merge(tokens_in_rule, index, human_data):
             merge_suggestion_with_context += f'{token_text} '
         else:
             merge_suggestion_with_context += f'{token_text} '
-    if merge_suggestion_with_context in human_data:
+    if merge_suggestion_with_context in human_seg_data:
         return False
     else:
         return True
 
-def is_invalid_merge(tokens_info, index_info, human_data):
+def is_invalid_merge(tokens_info, index_info, human_seg_data):
     """Return false if merge suggestion is ambiguous segmentation else true 
 
     Args:
         tokens_info (str): token info of a rule
         index_info (str): index info of a cql rule
-        human_data (str): human segmented data
+        human_seg_data (str): human segmented data
 
     Returns:
         boolean: True if invalid merge rule else False
@@ -284,18 +284,18 @@ def is_invalid_merge(tokens_info, index_info, human_data):
         part1 = re.search(r'text=\"(\S+)\"', tokens[index-1]).group(1)
         part2 = re.search(r'text=\"(\S+)\"', tokens[index]).group(1)
         merge_suggestion = f' {part1}{part2} '
-        splited_token_in_hd, split_idx = splited_token_in_human_data(merge_suggestion, human_data)
-        if "།" not in merge_suggestion and (merge_suggestion in human_data and splited_token_in_hd) and not is_false_positive_merge(tokens, index, human_data):
+        splited_token_in_hd, split_idx = splited_token_in_human_seg_data(merge_suggestion, human_seg_data)
+        if "།" not in merge_suggestion and (merge_suggestion in human_seg_data and splited_token_in_hd) and not is_false_positive_merge(tokens, index, human_seg_data):
             return False
         else:
             return True
 
-def filter_valid_rules(new_rules, human_data):
+def filter_valid_rules(new_rules, human_seg_data):
     """Return valid rules which can solve ambiguous segmentation errors
 
     Args:
         new_rules (list): cql rules
-        human_data (str): human segmented data
+        human_seg_data (str): human segmented data
 
     Returns:
         list: cql rules
@@ -304,23 +304,23 @@ def filter_valid_rules(new_rules, human_data):
     for new_rule in new_rules:
         tokens_info, index_info, operator, conclusion = parse_rule(new_rule)
         if ":" == operator:
-            is_invalid_split_flag, split_idx = is_invalid_split(tokens_info, index_info, human_data)
+            is_invalid_split_flag, split_idx = is_invalid_split(tokens_info, index_info, human_seg_data)
             if not is_invalid_split_flag:
                 new_rule = re.sub(r'-\d', f'-{split_idx}', new_rule)
                 valid_rules.append(new_rule)
         elif "+" == operator:
-            if not is_invalid_merge(tokens_info, index_info, human_data):
+            if not is_invalid_merge(tokens_info, index_info, human_seg_data):
                 valid_rules.append(new_rule)
     return valid_rules
 
-def get_new_rule(ambiguous_seg_candidates, index, conclusion, human_data):
+def get_new_rule(ambiguous_seg_candidates, index, conclusion, human_seg_data):
     """Return list of usable cql rules by botok
 
     Args:
         ambiguous_seg_candidates (list): ambiguous segmentation candidates
         index (int): index of token on which operation needs to perform
         conclusion (str): conclusion tag of rule
-        human_data (str): human segmented data
+        human_seg_data (str): human segmented data
 
     Returns:
         list: usable cql rules of botok
@@ -339,5 +339,5 @@ def get_new_rule(ambiguous_seg_candidates, index, conclusion, human_data):
         if new_rule:
             new_rules.append(new_rule)
     unique_rules = list(set(new_rules))
-    filtered_rules = filter_valid_rules(unique_rules, human_data)
+    filtered_rules = filter_valid_rules(unique_rules, human_seg_data)
     return filtered_rules
