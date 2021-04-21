@@ -124,8 +124,11 @@ def get_bilou_tag_line(human_toks, botok_toks):
                     break
                 elif re.search(f'^{botok_tok_text}', human_tok):
                     bilou_tag_line += f'{botok_tok_text}{botok_tok_pos}/B '
-                else:
+                elif re.search(cur_tok, human_tok):
                     bilou_tag_line += f'{botok_tok_text}{botok_tok_pos}/I '
+                else:
+                    botok_toks = botok_toks[tok_walker:]
+                    break
             elif re.search(human_tok, botok_tok_text):
                 cur_tok = human_tok
                 bilou_tag_line += f'{botok_tok_text}{botok_tok_pos}/S '
@@ -133,6 +136,7 @@ def get_bilou_tag_line(human_toks, botok_toks):
                     human_toks = human_toks[1:]
                     human_tok = human_toks[0]
                     cur_tok += human_tok
+                cur_tok = ''
             else:
                 botok_toks = botok_toks[tok_walker:]
                 if tok_walker != 0:
@@ -390,7 +394,7 @@ def extract_seg_rule(corpus_file_path, dialect_pack_name=DEFAULT_DPACK, type='cq
     """
     new_word_list = []
     new_remove_word_list = []
-    corpus_file_name = corpus_file_path.stem[:-2]
+    corpus_file_name = corpus_file_path.parent.stem
     number_of_segmentation = 1
     human_seg_data = corpus_file_path.read_text(encoding='utf-8-sig')
     human_seg_data = post_process_human_seg_data(human_seg_data)
@@ -418,7 +422,7 @@ def extract_seg_rule(corpus_file_path, dialect_pack_name=DEFAULT_DPACK, type='cq
     bilou_tag_init = (corpus_file_path.parent / f'{bilou_tag_data_path.name}.INIT').read_text(encoding='utf-8-sig')
     new_cql_rules = convert_bilou_rules(bilou_rules, bilou_tag_init, human_seg_data)
     new_cql_rules = "\n".join(new_cql_rules)
-    # rdr_postprocess(bilou_tag_data_path)
+    rdr_postprocess(bilou_tag_data_path)
     if type != 'cql':
         new_cql_rules = cqlr2hfr(new_cql_rules)
     return new_cql_rules

@@ -19,9 +19,9 @@ def test_postprocessing_human_seg_data(human_seg_data):
 
 
 def test_construct_bilou_tag_line():
-    human_toks = ["སྒྲ་བསྒྱུར་", "མར་པ་", "ལོ་ཙྪ", "འི་", "རྣམ་པར་", "ཐར་པ་", "མཐོང་བ་", "དོན་ཡོད་", "བཞུགས་", "སོ", "།།", "ན་མོ་གུ་རུ་", "དེ་ཝ་ཌཱ་ཀི་ནི", "།", "རྣམས་", "ལས་", "དམ་ཆོས་", "ནོར་བུ་", "དགོས་འདོད་", "ཆར་འབབས་", "བླངས་", "ནས་", "ནི", "།།", "གི", "ས་", "བསྐྱོད་", "ཕུ་ལ་ཧ་རི་"]
-    botok_toks = ["སྒྲ་<NO_POS>", "བསྒྱུར་<NO_POS>", "མར་པ་<NO_POS>", "ལོ་<NO_POS>", "ཙྪའི་<NO_POS>", "རྣམ་པ<NO_POS>", "ར་<NO_POS>", "ཐར་པ་<NO_POS>", "མཐོང་བ་<NO_POS>", "དོན་<NO_POS>", "ཡོད་<NO_POS>", "བཞུགས་<NO_POS>", "སོ<NO_POS>", "།།<NO_POS>", "ན་མོ་<NO_POS>", "གུ་རུ་<NO_POS>", "དེ་ཝ་<NO_POS>", "ཌཱ་ཀི་<NO_POS>", "ནི<NO_POS>", "།<NO_POS>", "རྣམས་<DET>", "ལས་དམ་<NO_POS>", "ཆོས་ནོར་<NO_POS>", "བུ་<NOUN>", "དགོས་འདོད་<NOUN>", "ཆ<NOUN>", "ར་<PART>", "འབབས་<NON_WORD>", "བླངས་<VERB>", "ནས་<PART>", "ནི<PART>", "།།<PUNCT>", "གིས་<NON_WORD>", "བསྐྱོད་<VERB>", "ཕུ་ལ་ཧ་རི་<NO_POS>"]
-    expected_bilou_line = 'སྒྲ་<NO_POS>/B བསྒྱུར་<NO_POS>/I མར་པ་<NO_POS>/U ལོ་<NO_POS>/B ཙྪའི་<NO_POS>/S རྣམ་པ<NO_POS>/B ར་<NO_POS>/I ཐར་པ་<NO_POS>/U མཐོང་བ་<NO_POS>/U དོན་<NO_POS>/B ཡོད་<NO_POS>/I བཞུགས་<NO_POS>/U སོ<NO_POS>/U །།<NO_POS>/U ན་མོ་<NO_POS>/B གུ་རུ་<NO_POS>/I དེ་ཝ་<NO_POS>/B ཌཱ་ཀི་<NO_POS>/I ནི<NO_POS>/I །<NO_POS>/U རྣམས་<DET>/U ལས་དམ་<NO_POS>/S ཆོས་ནོར་<NO_POS>/S བུ་<NOUN>/I དགོས་འདོད་<NOUN>/U ཆ<NOUN>/B ར་<PART>/I འབབས་<NON_WORD>/I བླངས་<VERB>/U ནས་<PART>/U ནི<PART>/U །།<PUNCT>/U གིས་<NON_WORD>/S བསྐྱོད་<VERB>/U ཕུ་ལ་ཧ་རི་<NO_POS>/U '
+    human_toks = ["སྒྲ་བསྒྱུར་", "མར་པ་", "ལོ་ཙྪ", "འི་", "རྣམ་པར་", "ན་མོ་གུ་རུ་", "ལས་", "དམ་ཆོས་", "ནོར་བུ་", "དགོས་འདོད་", "ཆར་འབབས་", "གི", "ས་", "བསྐྱོད་", "ཕུ་ལ་ཧ་རི་", "ནན་", "ཆེས་པ", "ས་", "ཅུང་ཟད་"]
+    botok_toks = ["སྒྲ་<NO_POS>", "བསྒྱུར་<NO_POS>", "མར་པ་<NO_POS>", "ལོ་<NO_POS>", "ཙྪའི་<NO_POS>", "རྣམ་པ<NO_POS>", "ར་<NO_POS>", "ན་མོ་<NO_POS>", "གུ་རུ་<NO_POS>", "ལས་དམ་<NO_POS>", "ཆོས་ནོར་<NO_POS>", "བུ་<NOUN>", "དགོས་འདོད་<NOUN>", "ཆ<NOUN>", "ར་<PART>", "འབབས་<NON_WORD>", "གིས་<NON_WORD>", "བསྐྱོད་<VERB>", "ཕུ་ལ་ཧ་རི་<NO_POS>", "ནན་ཆེ<NON_WORD>", "ས་པ<NON_WORD>", "ས་<NON_WORD>", "ཅུང་ཟད་<NON_WORD>"]
+    expected_bilou_line = 'སྒྲ་<NO_POS>/B བསྒྱུར་<NO_POS>/I མར་པ་<NO_POS>/U ལོ་<NO_POS>/B ཙྪའི་<NO_POS>/S རྣམ་པ<NO_POS>/B ར་<NO_POS>/I ན་མོ་<NO_POS>/B གུ་རུ་<NO_POS>/I ལས་དམ་<NO_POS>/S ཆོས་ནོར་<NO_POS>/S བུ་<NOUN>/I དགོས་འདོད་<NOUN>/U ཆ<NOUN>/B ར་<PART>/I འབབས་<NON_WORD>/I གིས་<NON_WORD>/S བསྐྱོད་<VERB>/U ཕུ་ལ་ཧ་རི་<NO_POS>/U ནན་ཆེ<NON_WORD>/S ས་པ<NON_WORD>/I ས་<NON_WORD>/U ཅུང་ཟད་<NON_WORD>/U '
     assert expected_bilou_line == get_bilou_tag_line(human_toks, botok_toks)
 
 def test_get_new_word_candidate():
@@ -89,7 +89,7 @@ def test_valid_merge_rule():
 
 if __name__ == "__main__":
     # input_path = Path('./tests/corpus1/corpus1.txt')
-    # input_path = Path('./tests/marpa/marpa.txt')
-    input_path = Path('./tests/data/drokun_test/drokun_test_hd.txt')
+    input_path = Path('./tests/data/marpa/marpa_hd.txt')
+    # input_path = Path('./tests/data/drokun_test/drokun_test_hd.txt')
     rules = extract_seg_rule(input_path, type='cql')
-    (input_path.parent / f'{input_path.stem[:-2]}_rules.txt').write_text(rules, encoding='utf-8')
+    (input_path.parent / f'{input_path.parent.stem}_rules.txt').write_text(rules, encoding='utf-8')
