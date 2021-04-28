@@ -1,6 +1,14 @@
 import re
 
 def get_syls(token):
+    """Return syllables of token
+
+    Args:
+        token (str): token text
+
+    Returns:
+        list: syllables of the given token
+    """
     syls = []
     token_parts = re.split("(་)", token)
     syl = ''
@@ -39,6 +47,14 @@ def get_tokens(tokens_info):
     return tokens
 
 def parse_tok(token):
+    """Parse bilou tagged token and return bilou tag and the text of the token
+
+    Args:
+        token (str): botok token with its pos tag
+
+    Returns:
+        str, str: bilou tag of the token and text of the token itself
+    """
     try:
         bilou_tag = re.search(r'pos="(\S)"', token).group(1)
     except:
@@ -162,6 +178,15 @@ def parse_index_info(index_info):
     return index
 
 def splited_token_in_human_seg_data(split_tok_text, human_seg_data):
+    """Return the possible splited token in human segmented data with index of syllable on with split is taking place
+
+    Args:
+        split_tok_text (str): token which is suggested to be split
+        human_seg_data (str): human segmented corpus
+
+    Returns:
+        str, int: possible split option and index of syllable on which split is taking place
+    """
     spilt_suggestion = split_tok_text.strip()
     syls = get_syls(spilt_suggestion)
     for syl_walker, syl in enumerate(syls):
