@@ -1,40 +1,15 @@
-<h1 align="center">
-  <br>
-  <a href="https://buddhistai.tools/"><img src="https://raw.githubusercontent.com/WeBuddhist/visual-assets/refs/heads/main/logo/WB-logo-purple.png" alt="OpenPecha" width="150"></a>
-  <br>
-</h1>
+#
+pybo
 
-<h1 align="center">pybo</h1>
+NLP for Tibetan, in Python.
 
-<p align="center">
-  |Python| |MIT|
-</p>
+	## Language
+Python
 
-🦜 NLP for Tibetan, in Python.
+	## Description
+pybo is an open source library for Tibetan NPL. The word segmentation tool that tokenizes Tibetan text into words.
 
-## Table of Contents
-
-- [Features](#features)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Development](#contributing)
-- [How to get help](#how-to-get-help)
-- [Terms of use](#terms-of-use)
-
-## Features
-
-- Tibetan Natural Language Processing
-- Word segmentation
-- Tokenization
-- Part-of-speech tagging
-- Integration with Botok
-
-## Prerequisites
-
-- Python 3.8+
-
-## Installation
+	## Installation
 
 ```bash
 pip install pybo
@@ -54,14 +29,15 @@ pip install -e .
 import pybo
 
 # Example usage
-text = "བོད་ཡིག"
-result = pybo.segment(text)
+text = ".๔༽ང་འ༽ <bresult = pybo.segment(text)
 print(result)
 ```
 
 ## How to get help
 * File an issue.
+
 * Join our [discord](https://discord.com/invite/7GFpPFSTeA).
 
 ## Terms of use
-pybo is licensed under the [MIT License](/LICENSE).
+
+xpybo is licensed under the [MIT License](/LICENSE).
